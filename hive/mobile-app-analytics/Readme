@@ -1,0 +1,302 @@
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ jps
+53968 RunJar
+4388 NameNode
+4741 SecondaryNameNode
+5062 NodeManager
+4934 ResourceManager
+4520 DataNode
+109227 Jps
+53562 RunJar
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ java -version
+openjdk version "1.8.0_504"
+OpenJDK Runtime Environment (build 1.8.0_504-8u504-ga-1ubuntu1~26.04.3-b01)
+OpenJDK 64-Bit Server VM (build 25.504-b01, mixed mode)
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ nano mobile_activity.csv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ cat mobile_activity.csv
+U001,Rahul,LOGIN,Android,2026-10-01,120
+U002,Priya,LOGIN,iPhone,2026-10-01,180
+U003,amit,VIDEO_PLAY,Android,2026-10-01,300
+U001,Rahul,VIDEO_PLAY,Android,2026-10-01,250
+U004,NEHA,LOGOUT,iPhone,2026-10-01,60
+U002,Priya,VIDEO_PLAY,iPhone,2026-10-01,400
+U005,ankit,LOGIN,Android,2026-10-01,150
+U003,amit,LOGOUT,Android,2026-10-01,80
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ hdfs dfs -mkdir -p /user/vboxuser/mobile_activity
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ hdfs dfs -put -f mobile_activity.csv /user/vboxuser/mobile_activity/
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ hdfs dfs -ls /user/vboxuser/mobile_activity
+Found 1 items
+-rw-r--r--   1 vboxuser supergroup        329 2026-10-04 18:51 /user/vboxuser/mobile_activity/mobile_activity.csv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ hdfs dfs -cat /user/vboxuser/mobile_activity/mobile_activity.csv
+U001,Rahul,LOGIN,Android,2026-10-01,120
+U002,Priya,LOGIN,iPhone,2026-10-01,180
+U003,amit,VIDEO_PLAY,Android,2026-10-01,300
+U001,Rahul,VIDEO_PLAY,Android,2026-10-01,250
+U004,NEHA,LOGOUT,iPhone,2026-10-01,60
+U002,Priya,VIDEO_PLAY,iPhone,2026-10-01,400
+U005,ankit,LOGIN,Android,2026-10-01,150
+U003,amit,LOGOUT,Android,2026-10-01,80
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ beeline -u jdbc:hive2://localhost:10001
+0: jdbc:hive2://localhost:10001> CREATE DATABASE IF NOT EXISTS mobile_analytics;
+No rows affected (0.19 seconds)
+0: jdbc:hive2://localhost:10001> USE mobile_analytics;
+No rows affected (0.028 seconds)
+0: jdbc:hive2://localhost:10001> SELECT current_database();
++-------------------+
+|        _c0        |
++-------------------+
+| mobile_analytics  |
++-------------------+
+1 row selected (0.156 seconds)
+0: jdbc:hive2://localhost:10001> CREATE EXTERNAL TABLE mobile_activity (
+. . . . . . . . . . . . . . . .>     user_id STRING,
+. . . . . . . . . . . . . . . .>     user_name STRING,
+. . . . . . . . . . . . . . . .>     event_type STRING,
+. . . . . . . . . . . . . . . .>     device_type STRING,
+. . . . . . . . . . . . . . . .>     event_date STRING,
+. . . . . . . . . . . . . . . .>     session_duration INT
+. . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . .> ROW FORMAT DELIMITED
+. . . . . . . . . . . . . . . .> FIELDS TERMINATED BY ','
+. . . . . . . . . . . . . . . .> LOCATION '/user/vboxuser/mobile_activity';
+No rows affected (0.226 seconds)
+0: jdbc:hive2://localhost:10001> DESCRIBE mobile_activity;
++-------------------+------------+----------+
+|     col_name      | data_type  | comment  |
++-------------------+------------+----------+
+| user_id           | string     |          |
+| user_name         | string     |          |
+| event_type        | string     |          |
+| device_type       | string     |          |
+| event_date        | string     |          |
+| session_duration  | int        |          |
++-------------------+------------+----------+
+6 rows selected (0.127 seconds)
+0: jdbc:hive2://localhost:10001> SELECT * FROM mobile_activity;
++--------------------------+----------------------------+-----------------------------+------------------------------+-----------------------------+-----------------------------------+
+| mobile_activity.user_id  | mobile_activity.user_name  | mobile_activity.event_type  | mobile_activity.device_type  | mobile_activity.event_date  | mobile_activity.session_duration  |
++--------------------------+----------------------------+-----------------------------+------------------------------+-----------------------------+-----------------------------------+
+| U001                     | Rahul                      | LOGIN                       | Android                      | 2026-10-01                  | 120                               |
+| U002                     | Priya                      | LOGIN                       | iPhone                       | 2026-10-01                  | 180                               |
+| U003                     | amit                       | VIDEO_PLAY                  | Android                      | 2026-10-01                  | 300                               |
+| U001                     | Rahul                      | VIDEO_PLAY                  | Android                      | 2026-10-01                  | 250                               |
+| U004                     | NEHA                       | LOGOUT                      | iPhone                       | 2026-10-01                  | 60                                |
+| U002                     | Priya                      | VIDEO_PLAY                  | iPhone                       | 2026-10-01                  | 400                               |
+| U005                     | ankit                      | LOGIN                       | Android                      | 2026-10-01                  | 150                               |
+| U003                     | amit                       | LOGOUT                      | Android                      | 2026-10-01                  | 80                                |
++--------------------------+----------------------------+-----------------------------+------------------------------+-----------------------------+-----------------------------------+
+8 rows selected (0.162 seconds)
+0: jdbc:hive2://localhost:10001> SELECT COUNT(*) FROM mobile_activity;
++------+
+| _c0  |
++------+
+| 8    |
++------+
+1 row selected (24.156 seconds)
+0: jdbc:hive2://localhost:10001> SELECT DISTINCT
+. . . . . . . . . . . . . . . .>     user_id,
+. . . . . . . . . . . . . . . .>     user_name
+. . . . . . . . . . . . . . . .> FROM mobile_activity;
++----------+------------+
+| user_id  | user_name  |
++----------+------------+
+| U001     | Rahul      |
+| U002     | Priya      |
+| U003     | amit       |
+| U004     | NEHA       |
+| U005     | ankit      |
++----------+------------+
+5 rows selected (40.466 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     event_type,
+. . . . . . . . . . . . . . . .>     COUNT(DISTINCT user_id) AS user_count
+. . . . . . . . . . . . . . . .> FROM mobile_activity
+. . . . . . . . . . . . . . . .> GROUP BY event_type;
++-------------+-------------+
+| event_type  | user_count  |
++-------------+-------------+
+| LOGIN       | 3           |
+| LOGOUT      | 2           |
+| VIDEO_PLAY  | 3           |
++-------------+-------------+
+3 rows selected (24.549 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     event_type,
+. . . . . . . . . . . . . . . .>     COUNT(*) AS event_count
+. . . . . . . . . . . . . . . .> FROM mobile_activity
+. . . . . . . . . . . . . . . .> GROUP BY event_type;
++-------------+--------------+
+| event_type  | event_count  |
++-------------+--------------+
+| LOGIN       | 3            |
+| LOGOUT      | 2            |
+| VIDEO_PLAY  | 3            |
++-------------+--------------+
+3 rows selected (38.597 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     AVG(session_duration) AS average_session_duration
+. . . . . . . . . . . . . . . .> FROM mobile_activity;
++---------------------------+
+| average_session_duration  |
++---------------------------+
+| 192.5                     |
++---------------------------+
+1 row selected (45.4 seconds)
+0: jdbc:hive2://localhost:10001> Closing: 0: jdbc:hive2://localhost:10001
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ ls
+mobile_activity.csv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ nano uppercase_udf.py
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ chmod +x uppercase_udf.py
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ ls -l uppercase_udf.py
+-rwxrwxr-x 1 vboxuser vboxuser 567 Oct  4 19:00 uppercase_udf.py
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ printf 'U001\tRahul\tLOGIN\tAndroid\t2026-10-01\t120\n' | ./uppercase_udf.py
+U001	Rahul	RAHUL	LOGIN	Android	2026-10-01	120
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ printf 'U001\tRahul\tLOGIN\tAndroid\t2026-10-01\t120\nU003\tamit\tVIDEO_PLAY\tAndroid\t2026-10-01\t300\nU005\tankit\tLOGIN\tAndroid\t2026-10-01\t150\n' | ./uppercase_udf.py
+U001	Rahul	RAHUL	LOGIN	Android	2026-10-01	120
+U003	amit	AMIT	VIDEO_PLAY	Android	2026-10-01	300
+U005	ankit	ANKIT	LOGIN	Android	2026-10-01	150
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/mobile-app-analytics$ beeline -u jdbc:hive2://localhost:10001
+0: jdbc:hive2://localhost:10001> USE mobile_analytics;
+No rows affected (0.075 seconds)
+0: jdbc:hive2://localhost:10001> SELECT TRANSFORM (
+. . . . . . . . . . . . . . . .>     user_id,
+. . . . . . . . . . . . . . . .>     user_name,
+. . . . . . . . . . . . . . . .>     event_type,
+. . . . . . . . . . . . . . . .>     device_type,
+. . . . . . . . . . . . . . . .>     event_date,
+. . . . . . . . . . . . . . . .>     session_duration
+. . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . .> USING 'python3 /home/vboxuser/CDAC_Big_Data/hive/mobile-app-analytics/uppercase_udf.py'
+. . . . . . . . . . . . . . . .> AS (
+. . . . . . . . . . . . . . . .>     user_id STRING,
+. . . . . . . . . . . . . . . .>     user_name STRING,
+. . . . . . . . . . . . . . . .>     standardized_name STRING,
+. . . . . . . . . . . . . . . .>     event_type STRING,
+. . . . . . . . . . . . . . . .>     device_type STRING,
+. . . . . . . . . . . . . . . .>     event_date STRING,
+. . . . . . . . . . . . . . . .>     session_duration INT
+. . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . .> FROM mobile_activity;
++----------+------------+--------------------+-------------+--------------+-------------+-------------------+
+| user_id  | user_name  | standardized_name  | event_type  | device_type  | event_date  | session_duration  |
++----------+------------+--------------------+-------------+--------------+-------------+-------------------+
+| U001     | Rahul      | RAHUL              | LOGIN       | Android      | 2026-10-01  | 120               |
+| U002     | Priya      | PRIYA              | LOGIN       | iPhone       | 2026-10-01  | 180               |
+| U003     | amit       | AMIT               | VIDEO_PLAY  | Android      | 2026-10-01  | 300               |
+| U001     | Rahul      | RAHUL              | VIDEO_PLAY  | Android      | 2026-10-01  | 250               |
+| U004     | NEHA       | NEHA               | LOGOUT      | iPhone       | 2026-10-01  | 60                |
+| U002     | Priya      | PRIYA              | VIDEO_PLAY  | iPhone       | 2026-10-01  | 400               |
+| U005     | ankit      | ANKIT              | LOGIN       | Android      | 2026-10-01  | 150               |
+| U003     | amit       | AMIT               | LOGOUT      | Android      | 2026-10-01  | 80                |
++----------+------------+--------------------+-------------+--------------+-------------+-------------------+
+8 rows selected (15.454 seconds)
+0: jdbc:hive2://localhost:10001> CREATE TABLE mobile_activity_standardized (
+. . . . . . . . . . . . . . . .>     user_id STRING,
+. . . . . . . . . . . . . . . .>     user_name STRING,
+. . . . . . . . . . . . . . . .>     standardized_name STRING,
+. . . . . . . . . . . . . . . .>     event_type STRING,
+. . . . . . . . . . . . . . . .>     device_type STRING,
+. . . . . . . . . . . . . . . .>     event_date STRING,
+. . . . . . . . . . . . . . . .>     session_duration INT
+. . . . . . . . . . . . . . . .> );
+No rows affected (0.063 seconds)
+0: jdbc:hive2://localhost:10001> INSERT INTO TABLE mobile_activity_standardized
+. . . . . . . . . . . . . . . .> SELECT TRANSFORM (
+. . . . . . . . . . . . . . . .>     user_id,
+. . . . . . . . . . . . . . . .>     user_name,
+. . . . . . . . . . . . . . . .>     event_type,
+. . . . . . . . . . . . . . . .>     device_type,
+. . . . . . . . . . . . . . . .>     event_date,
+. . . . . . . . . . . . . . . .>     session_duration
+. . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . .> USING 'python3 /home/vboxuser/CDAC_Big_Data/hive/mobile-app-analytics/uppercase_udf.py'
+. . . . . . . . . . . . . . . .> AS (
+. . . . . . . . . . . . . . . .>     user_id STRING,
+. . . . . . . . . . . . . . . .>     user_name STRING,
+. . . . . . . . . . . . . . . .>     standardized_name STRING,
+. . . . . . . . . . . . . . . .>     event_type STRING,
+. . . . . . . . . . . . . . . .>     device_type STRING,
+. . . . . . . . . . . . . . . .>     event_date STRING,
+. . . . . . . . . . . . . . . .>     session_duration INT
+. . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . .> FROM mobile_activity;
+8 rows affected (28.084 seconds)
+0: jdbc:hive2://localhost:10001> SELECT * FROM mobile_activity_standardized;
++---------------------------------------+-----------------------------------------+-------------------------------------------------+------------------------------------------+-------------------------------------------+------------------------------------------+------------------------------------------------+
+| mobile_activity_standardized.user_id  | mobile_activity_standardized.user_name  | mobile_activity_standardized.standardized_name  | mobile_activity_standardized.event_type  | mobile_activity_standardized.device_type  | mobile_activity_standardized.event_date  | mobile_activity_standardized.session_duration  |
++---------------------------------------+-----------------------------------------+-------------------------------------------------+------------------------------------------+-------------------------------------------+------------------------------------------+------------------------------------------------+
+| U001                                  | Rahul                                   | RAHUL                                           | LOGIN                                    | Android                                   | 2026-10-01                               | 120                                            |
+| U002                                  | Priya                                   | PRIYA                                           | LOGIN                                    | iPhone                                    | 2026-10-01                               | 180                                            |
+| U003                                  | amit                                    | AMIT                                            | VIDEO_PLAY                               | Android                                   | 2026-10-01                               | 300                                            |
+| U001                                  | Rahul                                   | RAHUL                                           | VIDEO_PLAY                               | Android                                   | 2026-10-01                               | 250                                            |
+| U004                                  | NEHA                                    | NEHA                                            | LOGOUT                                   | iPhone                                    | 2026-10-01                               | 60                                             |
+| U002                                  | Priya                                   | PRIYA                                           | VIDEO_PLAY                               | iPhone                                    | 2026-10-01                               | 400                                            |
+| U005                                  | ankit                                   | ANKIT                                           | LOGIN                                    | Android                                   | 2026-10-01                               | 150                                            |
+| U003                                  | amit                                    | AMIT                                            | LOGOUT                                   | Android                                   | 2026-10-01                               | 80                                             |
++---------------------------------------+-----------------------------------------+-------------------------------------------------+------------------------------------------+-------------------------------------------+------------------------------------------+------------------------------------------------+
+8 rows selected (0.11 seconds)
+0: jdbc:hive2://localhost:10001> SELECT DISTINCT
+. . . . . . . . . . . . . . . .>     standardized_name
+. . . . . . . . . . . . . . . .> FROM mobile_activity_standardized;
++--------------------+
+| standardized_name  |
++--------------------+
+| AMIT               |
+| ANKIT              |
+| NEHA               |
+| PRIYA              |
+| RAHUL              |
++--------------------+
+5 rows selected (68.296 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     standardized_name,
+. . . . . . . . . . . . . . . .>     COUNT(*) AS activity_count
+. . . . . . . . . . . . . . . .> FROM mobile_activity_standardized
+. . . . . . . . . . . . . . . .> GROUP BY standardized_name
+. . . . . . . . . . . . . . . .> ORDER BY activity_count DESC;
++--------------------+-----------------+
+| standardized_name  | activity_count  |
++--------------------+-----------------+
+| RAHUL              | 2               |
+| PRIYA              | 2               |
+| AMIT               | 2               |
+| NEHA               | 1               |
+| ANKIT              | 1               |
++--------------------+-----------------+
+5 rows selected (45.311 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     standardized_name,
+. . . . . . . . . . . . . . . .>     AVG(session_duration) AS avg_session_duration
+. . . . . . . . . . . . . . . .> FROM mobile_activity_standardized
+. . . . . . . . . . . . . . . .> GROUP BY standardized_name;
++--------------------+-----------------------+
+| standardized_name  | avg_session_duration  |
++--------------------+-----------------------+
+| AMIT               | 190.0                 |
+| ANKIT              | 150.0                 |
+| NEHA               | 60.0                  |
+| PRIYA              | 290.0                 |
+| RAHUL              | 185.0                 |
++--------------------+-----------------------+
+5 rows selected (20.351 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     event_type,
+. . . . . . . . . . . . . . . .>     COUNT(*) AS event_count
+. . . . . . . . . . . . . . . .> FROM mobile_activity_standardized
+. . . . . . . . . . . . . . . .> GROUP BY event_type;
++-------------+--------------+
+| event_type  | event_count  |
++-------------+--------------+
+| LOGIN       | 3            |
+| LOGOUT      | 2            |
+| VIDEO_PLAY  | 3            |
++-------------+--------------+
+3 rows selected (20.626 seconds)
+0: jdbc:hive2://localhost:10001> SHOW TABLES;
++-------------------------------+
+|           tab_name            |
++-------------------------------+
+| mobile_activity               |
+| mobile_activity_standardized  |
++-------------------------------+
+2 rows selected (0.065 seconds)
+0: jdbc:hive2://localhost:10001> Closing: 0: jdbc:hive2://localhost:10001
