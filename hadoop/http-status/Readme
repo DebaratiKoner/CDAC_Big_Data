@@ -73,6 +73,16 @@ Deleted /user/vboxuser/http_status/output
 vboxuser@Ubuntu2:~/http-status$ hdfs dfs -ls /user/$USER/http_status/
 Found 1 items
 drwxr-xr-x   - vboxuser supergroup          0 2026-10-04 10:50 /user/vboxuser/http_status/input
+vboxuser@Ubuntu2:~/http-status$ yarn application -list
+2026-10-04 10:54:26,711 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at localhost/127.0.0.1:8032
+Total number of applications (application-types: [], states: [SUBMITTED, ACCEPTED, RUNNING] and tags: []):1
+                Application-Id	    Application-Name	    Application-Type	      User	     Queue	             State	       Final-State	       Progress	                       Tracking-URL
+application_1791109403584_0001	streamjob9110092862782915771.jar	           MAPREDUCE	  vboxuser	   default	          ACCEPTED	         UNDEFINED	             0%	                                N/A
+vboxuser@Ubuntu2:~/http-status$ yarn node -list -all
+2026-10-04 11:26:28,456 INFO client.DefaultNoHARMFailoverProxyProvider: Connecting to ResourceManager at localhost/127.0.0.1:8032
+Total Nodes:1
+         Node-Id	     Node-State	Node-Http-Address	Number-of-Running-Containers
+   Ubuntu2:43037	        RUNNING	     Ubuntu2:8042	                           0
 vboxuser@Ubuntu2:~/http-status$ ./driver.py
 Starting Hadoop MapReduce job...
 2026-10-04 11:45:27,850 WARN streaming.StreamJob: -file option is deprecated, please use generic option -files instead.
