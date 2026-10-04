@@ -30,6 +30,7 @@ vboxuser@Ubuntu2:~/http-status$ chmod +x combiner.py
 vboxuser@Ubuntu2:~/http-status$ nano reducer.py
 vboxuser@Ubuntu2:~/http-status$ chmod +x reducer.py
 vboxuser@Ubuntu2:~/http-status$ nano partitioner.py
+vboxuser@Ubuntu2:~/http-status$ chmod +x partitioner.py
 vboxuser@Ubuntu2:~/http-status$ nano driver.py
 vboxuser@Ubuntu2:~/http-status$ chmod +x driver.py
 vboxuser@Ubuntu2:~/http-status$ chmod +x mapper.py combiner.py partitioner.py reducer.py driver.py
@@ -43,6 +44,10 @@ vboxuser@Ubuntu2:~/http-status$ cat web_logs.txt | ./mapper.py
 0	200	1
 1	500	1
 vboxuser@Ubuntu2:~/http-status$ cat web_logs.txt | ./mapper.py | sort | ./combiner.py
+0	200	4
+1	404	2
+1	500	2
+vboxuser@Ubuntu2:~/http-status$ cat web_logs.txt | ./mapper.py | sort | ./combiner.py | ./partitioner.py
 0	200	4
 1	404	2
 1	500	2
@@ -63,11 +68,6 @@ hdfs dfs -put -f web_logs.txt /user/$USER/http_status/input/
 vboxuser@Ubuntu2:~/http-status$ hdfs dfs -ls /user/$USER/http_status/input
 Found 1 items
 -rw-r--r--   1 vboxuser supergroup        229 2026-10-04 10:50 /user/vboxuser/http_status/input/web_logs.txt
-vboxuser@Ubuntu2:~/http-status$ hdfs dfs -ls /user/$USER/http_status/output
-Found 3 items
--rw-r--r--   1 vboxuser supergroup          0 2026-10-04 11:13 /user/vboxuser/http_status/output/_SUCCESS
--rw-r--r--   1 vboxuser supergroup          6 2026-10-04 11:13 /user/vboxuser/http_status/output/part-00000
--rw-r--r--   1 vboxuser supergroup         24 2026-10-04 11:13 /user/vboxuser/http_status/output/part-00001
 vboxuser@Ubuntu2:~/http-status$ hdfs dfs -rm -r -f /user/$USER/http_status/output
 Deleted /user/vboxuser/http_status/output
 vboxuser@Ubuntu2:~/http-status$ hdfs dfs -ls /user/$USER/http_status/
@@ -167,6 +167,11 @@ packageJobJar: [mapper.py, combiner.py, reducer.py, /tmp/hadoop-unjar67069731470
 		Bytes Written=18
 2026-10-04 11:46:04,702 INFO streaming.StreamJob: Output directory: /user/vboxuser/http_status/output
 Job completed successfully.
+vboxuser@Ubuntu2:~/http-status$ hdfs dfs -ls /user/$USER/http_status/output
+Found 3 items
+-rw-r--r--   1 vboxuser supergroup          0 2026-10-04 11:13 /user/vboxuser/http_status/output/_SUCCESS
+-rw-r--r--   1 vboxuser supergroup          6 2026-10-04 11:13 /user/vboxuser/http_status/output/part-00000
+-rw-r--r--   1 vboxuser supergroup         24 2026-10-04 11:13 /user/vboxuser/http_status/output/part-00001
 vboxuser@Ubuntu2:~/http-status$ hdfs dfs -cat /user/$USER/http_status/output/part-*
 200	4
 404	2
