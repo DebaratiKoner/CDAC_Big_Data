@@ -114,49 +114,11 @@ SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
 Hive Session ID = d88b0772-c189-421b-acdf-526c18aaec99
 Hive Session ID = 19db05d5-32ba-48be-ac80-806fef176733
 vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ beeline -u jdbc:hive2://localhost:10001
-SLF4J: Class path contains multiple SLF4J bindings.
-SLF4J: Found binding in [jar:file:/usr/local/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
-SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
-SLF4J: Class path contains multiple SLF4J bindings.
-SLF4J: Found binding in [jar:file:/usr/local/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
-SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
-SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
-Connecting to jdbc:hive2://localhost:10001
-Connected to: Apache Hive (version 4.0.1)
-Driver: Hive JDBC (version 4.0.1)
-Transaction isolation: TRANSACTION_REPEATABLE_READ
-Beeline version 4.0.1 by Apache Hive
 0: jdbc:hive2://localhost:10001> CREATE DATABASE IF NOT EXISTS learning_db;
-INFO  : Compiling command(queryId=vboxuser_20261004134022_22204a2f-08ff-4c44-85cb-4120f69d3ae2): CREATE DATABASE IF NOT EXISTS learning_db
-INFO  : Semantic Analysis Completed (retrial = false)
-INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
-INFO  : Completed compiling command(queryId=vboxuser_20261004134022_22204a2f-08ff-4c44-85cb-4120f69d3ae2); Time taken: 0.93 seconds
-INFO  : Concurrency mode is disabled, not creating a lock manager
-INFO  : Executing command(queryId=vboxuser_20261004134022_22204a2f-08ff-4c44-85cb-4120f69d3ae2): CREATE DATABASE IF NOT EXISTS learning_db
-INFO  : Starting task [Stage-0:DDL] in serial mode
-INFO  : Completed executing command(queryId=vboxuser_20261004134022_22204a2f-08ff-4c44-85cb-4120f69d3ae2); Time taken: 1.356 seconds
 No rows affected (2.458 seconds)
 0: jdbc:hive2://localhost:10001> USE learning_db;
-INFO  : Compiling command(queryId=vboxuser_20261004134031_924fbc4c-74a5-4ff0-86e0-4b9ea2a6ae23): USE learning_db
-INFO  : Semantic Analysis Completed (retrial = false)
-INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
-INFO  : Completed compiling command(queryId=vboxuser_20261004134031_924fbc4c-74a5-4ff0-86e0-4b9ea2a6ae23); Time taken: 0.032 seconds
-INFO  : Concurrency mode is disabled, not creating a lock manager
-INFO  : Executing command(queryId=vboxuser_20261004134031_924fbc4c-74a5-4ff0-86e0-4b9ea2a6ae23): USE learning_db
-INFO  : Starting task [Stage-0:DDL] in serial mode
-INFO  : Completed executing command(queryId=vboxuser_20261004134031_924fbc4c-74a5-4ff0-86e0-4b9ea2a6ae23); Time taken: 0.006 seconds
 No rows affected (0.098 seconds)
 0: jdbc:hive2://localhost:10001> SELECT current_database();
-INFO  : Compiling command(queryId=vboxuser_20261004134036_b345671a-d2a4-4f54-a4ab-e7106af58bdc): SELECT current_database()
-INFO  : Semantic Analysis Completed (retrial = false)
-INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:_c0, type:string, comment:null)], properties:null)
-INFO  : Completed compiling command(queryId=vboxuser_20261004134036_b345671a-d2a4-4f54-a4ab-e7106af58bdc); Time taken: 2.459 seconds
-INFO  : Concurrency mode is disabled, not creating a lock manager
-INFO  : Executing command(queryId=vboxuser_20261004134036_b345671a-d2a4-4f54-a4ab-e7106af58bdc): SELECT current_database()
-INFO  : Completed executing command(queryId=vboxuser_20261004134036_b345671a-d2a4-4f54-a4ab-e7106af58bdc); Time taken: 0.0 seconds
 +--------------+
 |     _c0      |
 +--------------+
@@ -170,53 +132,11 @@ INFO  : Completed executing command(queryId=vboxuser_20261004134036_b345671a-d2a
 . . . . . . . . . . . . . . . .> )
 . . . . . . . . . . . . . . . .> ROW FORMAT DELIMITED
 . . . . . . . . . . . . . . . .> FIELDS TERMINATED BY ',';
-INFO  : Compiling command(queryId=vboxuser_20261004134049_1feff93f-c5a9-4ba8-9d86-deb030026b69): CREATE TABLE learners_managed (
-learner_id STRING,
-learner_name STRING,
-city STRING
-)
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-INFO  : Semantic Analysis Completed (retrial = false)
-INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
-INFO  : Completed compiling command(queryId=vboxuser_20261004134049_1feff93f-c5a9-4ba8-9d86-deb030026b69); Time taken: 0.03 seconds
-INFO  : Concurrency mode is disabled, not creating a lock manager
-INFO  : Executing command(queryId=vboxuser_20261004134049_1feff93f-c5a9-4ba8-9d86-deb030026b69): CREATE TABLE learners_managed (
-learner_id STRING,
-learner_name STRING,
-city STRING
-)
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-INFO  : Starting task [Stage-0:DDL] in serial mode
-INFO  : Completed executing command(queryId=vboxuser_20261004134049_1feff93f-c5a9-4ba8-9d86-deb030026b69); Time taken: 0.529 seconds
 No rows affected (0.57 seconds)
 0: jdbc:hive2://localhost:10001> LOAD DATA LOCAL INPATH '/home/vboxuser/CDAC_Big_Data/hive/online-learning/learners.csv'
 . . . . . . . . . . . . . . . .> INTO TABLE learners_managed;
-INFO  : Compiling command(queryId=vboxuser_20261004134100_b9594abf-ac22-4b0c-9ab6-36980117843e): LOAD DATA LOCAL INPATH '/home/vboxuser/CDAC_Big_Data/hive/online-learning/learners.csv'
-INTO TABLE learners_managed
-INFO  : Semantic Analysis Completed (retrial = false)
-INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
-INFO  : Completed compiling command(queryId=vboxuser_20261004134100_b9594abf-ac22-4b0c-9ab6-36980117843e); Time taken: 0.231 seconds
-INFO  : Concurrency mode is disabled, not creating a lock manager
-INFO  : Executing command(queryId=vboxuser_20261004134100_b9594abf-ac22-4b0c-9ab6-36980117843e): LOAD DATA LOCAL INPATH '/home/vboxuser/CDAC_Big_Data/hive/online-learning/learners.csv'
-INTO TABLE learners_managed
-INFO  : Starting task [Stage-0:MOVE] in serial mode
-INFO  : Loading data to table learning_db.learners_managed from file:/home/vboxuser/CDAC_Big_Data/hive/online-learning/learners.csv
-INFO  : Starting task [Stage-1:STATS] in serial mode
-INFO  : Executing stats task
-INFO  : Table learning_db.learners_managed stats: [numFiles=1, numRows=0, totalSize=98, rawDataSize=0, numFilesErasureCoded=0]
-INFO  : Completed executing command(queryId=vboxuser_20261004134100_b9594abf-ac22-4b0c-9ab6-36980117843e); Time taken: 0.372 seconds
 No rows affected (0.622 seconds)
 0: jdbc:hive2://localhost:10001> SELECT * FROM learners_managed;
-INFO  : Compiling command(queryId=vboxuser_20261004134113_bf42998e-7024-46e6-bb52-32a889825678): SELECT * FROM learners_managed
-INFO  : No Stats for learning_db@learners_managed, Columns: learner_id, city, learner_name
-INFO  : Semantic Analysis Completed (retrial = false)
-INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:learners_managed.learner_id, type:string, comment:null), FieldSchema(name:learners_managed.learner_name, type:string, comment:null), FieldSchema(name:learners_managed.city, type:string, comment:null)], properties:null)
-INFO  : Completed compiling command(queryId=vboxuser_20261004134113_bf42998e-7024-46e6-bb52-32a889825678); Time taken: 0.191 seconds
-INFO  : Concurrency mode is disabled, not creating a lock manager
-INFO  : Executing command(queryId=vboxuser_20261004134113_bf42998e-7024-46e6-bb52-32a889825678): SELECT * FROM learners_managed
-INFO  : Completed executing command(queryId=vboxuser_20261004134113_bf42998e-7024-46e6-bb52-32a889825678); Time taken: 0.0 seconds
 +------------------------------+--------------------------------+------------------------+
 | learners_managed.learner_id  | learners_managed.learner_name  | learners_managed.city  |
 +------------------------------+--------------------------------+------------------------+
@@ -239,4 +159,409 @@ drwxr-xr-x   - vboxuser supergroup          0 2026-10-04 13:41 /user/vboxuser/le
 -rw-r--r--   1 vboxuser supergroup         46 2026-10-04 13:41 /user/vboxuser/learning/courses/courses.csv
 drwxr-xr-x   - vboxuser supergroup          0 2026-10-04 13:41 /user/vboxuser/learning/enrollments
 -rw-r--r--   1 vboxuser supergroup         50 2026-10-04 13:41 /user/vboxuser/learning/enrollments/enrollments.csv
-vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ 
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ beeline -u jdbc:hive2://localhost:10001
+0: jdbc:hive2://localhost:10001> USE learning_db;
+0: jdbc:hive2://localhost:10001> CREATE EXTERNAL TABLE courses_external (
+. . . . . . . . . . . . . . . .>     course_id STRING,
+. . . . . . . . . . . . . . . .>     course_name STRING
+. . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . .> ROW FORMAT DELIMITED
+. . . . . . . . . . . . . . . .> FIELDS TERMINATED BY ','
+. . . . . . . . . . . . . . . .> LOCATION '/user/vboxuser/learning/courses';
++-----------------------------+-------------------------------+
+| courses_external.course_id  | courses_external.course_name  |
++-----------------------------+-------------------------------+
+| C001                        | Hadoop                        |
+| C002                        | Spark                         |
+| C003                        | Hive                          |
+| C004                        | Airflow                       |
++-----------------------------+-------------------------------+
+4 rows selected (0.342 seconds)
+0: jdbc:hive2://localhost:10001> DESCRIBE courses_external;
++--------------+------------+----------+
+|   col_name   | data_type  | comment  |
++--------------+------------+----------+
+| course_id    | string     |          |
+| course_name  | string     |          |
++--------------+------------+----------+
+2 rows selected (0.106 seconds)
+0: jdbc:hive2://localhost:10001> CREATE TABLE enrollments (
+. . . . . . . . . . . . . . . .>     learner_id STRING,
+. . . . . . . . . . . . . . . .>     course_id STRING
+. . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . .> ROW FORMAT DELIMITED
+. . . . . . . . . . . . . . . .> FIELDS TERMINATED BY ',';
++-------------------------+------------------------+
+| enrollments.learner_id  | enrollments.course_id  |
++-------------------------+------------------------+
+| L001                    | C001                   |
+| L001                    | C002                   |
+| L002                    | C001                   |
+| L003                    | C003                   |
+| L004                    | C002                   |
++-------------------------+------------------------+
+5 rows selected (0.194 seconds)
+0: jdbc:hive2://localhost:10001> DESCRIBE enrollments;
++-------------+------------+----------+
+|  col_name   | data_type  | comment  |
++-------------+------------+----------+
+| learner_id  | string     |          |
+| course_id   | string     |          |
++-------------+------------+----------+
+2 rows selected (0.098 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     l.learner_id,
+. . . . . . . . . . . . . . . .>     l.learner_name,
+. . . . . . . . . . . . . . . .>     c.course_id,
+. . . . . . . . . . . . . . . .>     c.course_name
+. . . . . . . . . . . . . . . .> FROM learners_managed l
+. . . . . . . . . . . . . . . .> INNER JOIN enrollments e
+. . . . . . . . . . . . . . . .>     ON l.learner_id = e.learner_id
+. . . . . . . . . . . . . . . .> INNER JOIN courses_external c
+. . . . . . . . . . . . . . . .>     ON e.course_id = c.course_id; 
+Task failed!
+0: jdbc:hive2://localhost:10001> SET hive.execution.engine=mr;
+No rows affected (0.028 seconds)
+0: jdbc:hive2://localhost:10001> SET hive.auto.convert.join=false;
+No rows affected (0.005 seconds)
+0: jdbc:hive2://localhost:10001> SET hive.auto.convert.join.noconditionaltask=false;
+No rows affected (0.01 seconds)
+0: jdbc:hive2://localhost:10001> SET mapreduce.job.reduces=2;
+No rows affected (0.006 seconds)
+0: jdbc:hive2://localhost:10001> SET mapreduce.framework.name;
++--------------------------------+
+|              set               |
++--------------------------------+
+| mapreduce.framework.name=yarn  |
++--------------------------------+
+1 row selected (0.013 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     l.learner_id,
+. . . . . . . . . . . . . . . .>     l.learner_name,
+. . . . . . . . . . . . . . . .>     c.course_id,
+. . . . . . . . . . . . . . . .>     c.course_name
+. . . . . . . . . . . . . . . .> FROM learners_managed l
+. . . . . . . . . . . . . . . .> INNER JOIN enrollments e
+. . . . . . . . . . . . . . . .>     ON l.learner_id = e.learner_id
+. . . . . . . . . . . . . . . .> INNER JOIN courses_external c
+. . . . . . . . . . . . . . . .>     ON e.course_id = c.course_id;
++---------------+-----------------+--------------+----------------+
+| l.learner_id  | l.learner_name  | c.course_id  | c.course_name  |
++---------------+-----------------+--------------+----------------+
+| L001          | Rahul           | C002         | Spark          |
+| L004          | Neha            | C002         | Spark          |
+| L003          | Amit            | C003         | Hive           |
+| L002          | Priya           | C001         | Hadoop         |
+| L001          | Rahul           | C001         | Hadoop         |
++---------------+-----------------+--------------+----------------+
+5 rows selected (126.901 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     l.learner_id,
+. . . . . . . . . . . . . . . .>     l.learner_name,
+. . . . . . . . . . . . . . . .>     e.course_id
+. . . . . . . . . . . . . . . .> FROM learners_managed l
+. . . . . . . . . . . . . . . .> LEFT OUTER JOIN enrollments e
+. . . . . . . . . . . . . . . .>     ON l.learner_id = e.learner_id;
++---------------+-----------------+--------------+
+| l.learner_id  | l.learner_name  | e.course_id  |
++---------------+-----------------+--------------+
+| L004          | Neha            | C002         |
+| L005          | Ankit           | NULL         |
+| L001          | Rahul           | C002         |
+| L001          | Rahul           | C001         |
+| L002          | Priya           | C001         |
+| L003          | Amit            | C003         |
++---------------+-----------------+--------------+
+6 rows selected (27.321 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     l.learner_id,
+. . . . . . . . . . . . . . . .>     l.learner_name
+. . . . . . . . . . . . . . . .> FROM learners_managed l
+. . . . . . . . . . . . . . . .> LEFT OUTER JOIN enrollments e
+. . . . . . . . . . . . . . . .>     ON l.learner_id = e.learner_id
+. . . . . . . . . . . . . . . .> WHERE e.learner_id IS NULL;
++---------------+-----------------+
+| l.learner_id  | l.learner_name  |
++---------------+-----------------+
+| L005          | Ankit           |
++---------------+-----------------+
+1 row selected (35.305 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     c.course_id,
+. . . . . . . . . . . . . . . .>     c.course_name,
+. . . . . . . . . . . . . . . .>     e.learner_id
+. . . . . . . . . . . . . . . .> FROM enrollments e
+. . . . . . . . . . . . . . . .> RIGHT OUTER JOIN courses_external c
+. . . . . . . . . . . . . . . .>     ON e.course_id = c.course_id;
++--------------+----------------+---------------+
+| c.course_id  | c.course_name  | e.learner_id  |
++--------------+----------------+---------------+
+| C002         | Spark          | L004          |
+| C002         | Spark          | L001          |
+| C003         | Hive           | L003          |
+| C004         | Airflow        | NULL          |
+| C001         | Hadoop         | L002          |
+| C001         | Hadoop         | L001          |
++--------------+----------------+---------------+
+6 rows selected (41.652 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     c.course_id,
+. . . . . . . . . . . . . . . .>     c.course_name
+. . . . . . . . . . . . . . . .> FROM enrollments e
+. . . . . . . . . . . . . . . .> RIGHT OUTER JOIN courses_external c
+. . . . . . . . . . . . . . . .>     ON e.course_id = c.course_id
+. . . . . . . . . . . . . . . .> WHERE e.course_id IS NULL;
++--------------+----------------+
+| c.course_id  | c.course_name  |
++--------------+----------------+
+| C004         | Airflow        |
++--------------+----------------+
+1 row selected (55.293 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     l.learner_id,
+. . . . . . . . . . . . . . . .>     l.learner_name,
+. . . . . . . . . . . . . . . .>     e.course_id
+. . . . . . . . . . . . . . . .> FROM learners_managed l
+. . . . . . . . . . . . . . . .> FULL OUTER JOIN enrollments e
+. . . . . . . . . . . . . . . .>     ON l.learner_id = e.learner_id;
++---------------+-----------------+--------------+
+| l.learner_id  | l.learner_name  | e.course_id  |
++---------------+-----------------+--------------+
+| L004          | Neha            | C002         |
+| L005          | Ankit           | NULL         |
+| L001          | Rahul           | C002         |
+| L001          | Rahul           | C001         |
+| L002          | Priya           | C001         |
+| L003          | Amit            | C003         |
++---------------+-----------------+--------------+
+6 rows selected (31.064 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     c.course_id,
+. . . . . . . . . . . . . . . .>     c.course_name,
+. . . . . . . . . . . . . . . .>     COUNT(e.learner_id) AS enrollment_count
+. . . . . . . . . . . . . . . .> FROM courses_external c
+. . . . . . . . . . . . . . . .> LEFT JOIN enrollments e
+. . . . . . . . . . . . . . . .>     ON c.course_id = e.course_id
+. . . . . . . . . . . . . . . .> GROUP BY c.course_id, c.course_name
+. . . . . . . . . . . . . . . .> ORDER BY enrollment_count DESC;
++--------------+----------------+-------------------+
+| c.course_id  | c.course_name  | enrollment_count  |
++--------------+----------------+-------------------+
+| C002         | Spark          | 2                 |
+| C001         | Hadoop         | 2                 |
+| C003         | Hive           | 1                 |
+| C004         | Airflow        | 0                 |
++--------------+----------------+-------------------+
+4 rows selected (89.029 seconds)
+0: jdbc:hive2://localhost:10001> SELECT /*+ MAPJOIN(c) */
+. . . . . . . . . . . . . . . .>     e.learner_id,
+. . . . . . . . . . . . . . . .>     e.course_id,
+. . . . . . . . . . . . . . . .>     c.course_name
+. . . . . . . . . . . . . . . .> FROM enrollments e
+. . . . . . . . . . . . . . . .> JOIN courses_external c
+. . . . . . . . . . . . . . . .>     ON e.course_id = c.course_id;
+| e.learner_id  | e.course_id  | c.course_name  |
++---------------+--------------+----------------+
+| L004          | C002         | Spark          |
+| L001          | C002         | Spark          |
+| L003          | C003         | Hive           |
+| L002          | C001         | Hadoop         |
+| L001          | C001         | Hadoop         |
++---------------+--------------+----------------+
+5 rows selected (27.271 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     e.learner_id,
+. . . . . . . . . . . . . . . .>     e.course_id,
+. . . . . . . . . . . . . . . .>     c.course_name
+. . . . . . . . . . . . . . . .> FROM enrollments e
+. . . . . . . . . . . . . . . .> JOIN courses_external c
+. . . . . . . . . . . . . . . .>     ON e.course_id = c.course_id;
++---------------+--------------+----------------+
+| e.learner_id  | e.course_id  | c.course_name  |
++---------------+--------------+----------------+
+| L004          | C002         | Spark          |
+| L001          | C002         | Spark          |
+| L003          | C003         | Hive           |
+| L002          | C001         | Hadoop         |
+| L001          | C001         | Hadoop         |
++---------------+--------------+----------------+
+5 rows selected (27.811 seconds)
+0: jdbc:hive2://localhost:10001> CREATE TABLE enrollments_partitioned (
+. . . . . . . . . . . . . . . .>     learner_id STRING,
+. . . . . . . . . . . . . . . .>     course_id STRING
+. . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . .> PARTITIONED BY (
+. . . . . . . . . . . . . . . .>     enrollment_date STRING
+. . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . .> ROW FORMAT DELIMITED
+. . . . . . . . . . . . . . . .> FIELDS TERMINATED BY ',';
++--------------------------+------------+----------+
+|         col_name         | data_type  | comment  |
++--------------------------+------------+----------+
+| learner_id               | string     |          |
+| course_id                | string     |          |
+| enrollment_date          | string     |          |
+|                          | NULL       | NULL     |
+| # Partition Information  | NULL       | NULL     |
+| # col_name               | data_type  | comment  |
+| enrollment_date          | string     |          |
++--------------------------+------------+----------+
+7 rows selected (0.046 seconds)
+0: jdbc:hive2://localhost:10001> INSERT INTO TABLE enrollments_partitioned
+. . . . . . . . . . . . . . . .> PARTITION (enrollment_date='2026-10-01')
+. . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . .>     learner_id,
+. . . . . . . . . . . . . . . .>     course_id
+. . . . . . . . . . . . . . . .> FROM enrollments;
++-----------------------------+
+|          partition          |
++-----------------------------+
+| enrollment_date=2026-10-01  |
++-----------------------------+
+1 row selected (0.074 seconds)
+0: jdbc:hive2://localhost:10001> INSERT INTO TABLE enrollments_partitioned
+. . . . . . . . . . . . . . . .> PARTITION (enrollment_date='2026-10-02')
+. . . . . . . . . . . . . . . .> SELECT
+. . . . . . . . . . . . . . . .>     learner_id,
+. . . . . . . . . . . . . . . .>     course_id
+. . . . . . . . . . . . . . . .> FROM enrollments
+. . . . . . . . . . . . . . . .> WHERE learner_id IN ('L001','L002');
++-----------------------------+
+|          partition          |
++-----------------------------+
+| enrollment_date=2026-10-01  |
+| enrollment_date=2026-10-02  |
++-----------------------------+
+2 rows selected (0.077 seconds)
+0: jdbc:hive2://localhost:10001> SELECT *
+. . . . . . . . . . . . . . . .> FROM enrollments_partitioned
+. . . . . . . . . . . . . . . .> WHERE enrollment_date='2026-10-01';
++-------------------------------------+------------------------------------+------------------------------------------+
+| enrollments_partitioned.learner_id  | enrollments_partitioned.course_id  | enrollments_partitioned.enrollment_date  |
++-------------------------------------+------------------------------------+------------------------------------------+
+| L001                                | C001                               | 2026-10-01                               |
+| L001                                | C002                               | 2026-10-01                               |
+| L002                                | C001                               | 2026-10-01                               |
+| L003                                | C003                               | 2026-10-01                               |
+| L004                                | C002                               | 2026-10-01                               |
++-------------------------------------+------------------------------------+------------------------------------------+
+5 rows selected (0.561 seconds)
+0: jdbc:hive2://localhost:10001> SELECT *
+. . . . . . . . . . . . . . . .> FROM enrollments_partitioned
+. . . . . . . . . . . . . . . .> WHERE enrollment_date='2026-10-02';
++-------------------------------------+------------------------------------+------------------------------------------+
+| enrollments_partitioned.learner_id  | enrollments_partitioned.course_id  | enrollments_partitioned.enrollment_date  |
++-------------------------------------+------------------------------------+------------------------------------------+
+| L001                                | C001                               | 2026-10-02                               |
+| L001                                | C002                               | 2026-10-02                               |
+| L002                                | C001                               | 2026-10-02                               |
++-------------------------------------+------------------------------------+------------------------------------------+
+3 rows selected (0.279 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     learner_id,
+. . . . . . . . . . . . . . . .>     course_id
+. . . . . . . . . . . . . . . .> FROM enrollments_partitioned
+. . . . . . . . . . . . . . . .> WHERE enrollment_date='2026-10-01'
+. . . . . . . . . . . . . . . .> AND learner_id='L001';
++-------------+------------+
+| learner_id  | course_id  |
++-------------+------------+
+| L001        | C001       |
+| L001        | C002       |
++-------------+------------+
+2 rows selected (0.299 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     e.learner_id,
+. . . . . . . . . . . . . . . .>     e.course_id,
+. . . . . . . . . . . . . . . .>     c.course_name,
+. . . . . . . . . . . . . . . .>     e.enrollment_date
+. . . . . . . . . . . . . . . .> FROM enrollments_partitioned e
+. . . . . . . . . . . . . . . .> JOIN courses_external c
+. . . . . . . . . . . . . . . .>     ON e.course_id = c.course_id
+. . . . . . . . . . . . . . . .> WHERE e.enrollment_date='2026-10-01';
++---------------+--------------+----------------+--------------------+
+| e.learner_id  | e.course_id  | c.course_name  | e.enrollment_date  |
++---------------+--------------+----------------+--------------------+
+| L004          | C002         | Spark          | 2026-10-01         |
+| L001          | C002         | Spark          | 2026-10-01         |
+| L003          | C003         | Hive           | 2026-10-01         |
+| L002          | C001         | Hadoop         | 2026-10-01         |
+| L001          | C001         | Hadoop         | 2026-10-01         |
++---------------+--------------+----------------+--------------------+
+5 rows selected (33.237 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     l.learner_id,
+. . . . . . . . . . . . . . . .>     l.learner_name,
+. . . . . . . . . . . . . . . .>     c.course_name,
+. . . . . . . . . . . . . . . .>     e.enrollment_date
+. . . . . . . . . . . . . . . .> FROM enrollments_partitioned e
+. . . . . . . . . . . . . . . .> JOIN learners_managed l
+. . . . . . . . . . . . . . . .>     ON e.learner_id = l.learner_id
+. . . . . . . . . . . . . . . .> JOIN courses_external c
+. . . . . . . . . . . . . . . .>     ON e.course_id = c.course_id
+. . . . . . . . . . . . . . . .> WHERE e.enrollment_date='2026-10-01'
+. . . . . . . . . . . . . . . .> ORDER BY l.learner_id;
++---------------+-----------------+----------------+--------------------+
+| l.learner_id  | l.learner_name  | c.course_name  | e.enrollment_date  |
++---------------+-----------------+----------------+--------------------+
+| L001          | Rahul           | Hadoop         | 2026-10-01         |
+| L001          | Rahul           | Spark          | 2026-10-01         |
+| L002          | Priya           | Hadoop         | 2026-10-01         |
+| L003          | Amit            | Hive           | 2026-10-01         |
+| L004          | Neha            | Spark          | 2026-10-01         |
++---------------+-----------------+----------------+--------------------+
+5 rows selected (85.367 seconds)
+0: jdbc:hive2://localhost:10001> SHOW DATABASES;
++-----------------+
+|  database_name  |
++-----------------+
+| default         |
+| ecommerce_dw    |
+| healthcare_elt  |
+| learning_db     |
+| telecom_dw      |
++-----------------+
+5 rows selected (0.05 seconds)
+0: jdbc:hive2://localhost:10001> USE learning_db;
+No rows affected (0.027 seconds)
+0: jdbc:hive2://localhost:10001> SHOW TABLES;
++--------------------------+
+|         tab_name         |
++--------------------------+
+| courses_external         |
+| enrollments              |
+| enrollments_partitioned  |
+| learners_managed         |
++--------------------------+
+4 rows selected (0.111 seconds)
+0: jdbc:hive2://localhost:10001> SHOW PARTITIONS enrollments_partitioned;
++-----------------------------+
+|          partition          |
++-----------------------------+
+| enrollment_date=2026-10-01  |
+| enrollment_date=2026-10-02  |
++-----------------------------+
+2 rows selected (0.077 seconds)
+0: jdbc:hive2://localhost:10001> SELECT COUNT(*) FROM learners_managed;
++------+
+| _c0  |
++------+
+| 5    |
++------+
+1 row selected (19.846 seconds)
+0: jdbc:hive2://localhost:10001> SELECT COUNT(*) FROM enrollments;
++------+
+| _c0  |
++------+
+| 5    |
++------+
+1 row selected (22.301 seconds)
+0: jdbc:hive2://localhost:10001> SELECT COUNT(*) FROM courses_external;
++------+
+| _c0  |
++------+
+| 4    |
++------+
+1 row selected (53.471 seconds)
+0: jdbc:hive2://localhost:10001> 
+
