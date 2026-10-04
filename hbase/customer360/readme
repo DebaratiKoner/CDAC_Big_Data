@@ -1,0 +1,224 @@
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hbase/customer360$ jps
+43252 Jps
+4388 NameNode
+4741 SecondaryNameNode
+5062 NodeManager
+4934 ResourceManager
+4520 DataNode
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hbase/customer360$ start-hbase.sh
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/hbase/lib/client-facing-thirdparty/log4j-slf4j-impl-2.25.4.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+running master, logging to /usr/local/hbase/logs/hbase-vboxuser-master-Ubuntu2.out
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/hbase/lib/client-facing-thirdparty/log4j-slf4j-impl-2.25.4.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hbase/customer360$ jps
+43729 Jps
+43508 HMaster
+4388 NameNode
+4741 SecondaryNameNode
+5062 NodeManager
+4934 ResourceManager
+4520 DataNode
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hbase/customer360$ hbase shell
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/hbase/lib/client-facing-thirdparty/log4j-slf4j-impl-2.25.4.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+HBase Shell
+Use "help" to get list of supported commands.
+Use "exit" to quit this interactive shell.
+For Reference, please visit: https://hbase.apache.org/docs/shell
+Version 2.6.6-hadoop3, rd5f63f523c065f963992ea4e74db268d17816631, Thu Jun  4 11:26:50 PDT 2026
+Took 0.0033 seconds                                                                                          
+hbase:001:0> create 'customer_profiles', 'info'
+Created table customer_profiles
+Took 1.1646 seconds                                                                                          
+=> Hbase::Table - customer_profiles
+hbase:002:0> list
+TABLE                                                                                                        
+cdac                                                                                                         
+customer_profiles                                                                                            
+customers                                                                                                    
+employee_attendance                                                                                          
+patient_analytics                                                                                            
+patient_visits                                                                                               
+student                                                                                                      
+transactions                                                                                                 
+8 row(s)
+Took 0.0718 seconds                                                                                          
+=> ["cdac", "customer_profiles", "customers", "employee_attendance", "patient_analytics", "patient_visits", "student", "transactions"]
+hbase:003:0> put 'customer_profiles', 'CUST1001', 'info:name', 'Rahul'
+Took 0.1737 seconds                                                                                          
+hbase:004:0> put 'customer_profiles', 'CUST1001', 'info:city', 'Bangalore'
+Took 0.0086 seconds                                                                                          
+hbase:005:0> put 'customer_profiles', 'CUST1001', 'info:mobile', '9876543210'
+Took 0.0660 seconds                                                                                          
+hbase:006:0> put 'customer_profiles', 'CUST1001', 'info:plan', 'Premium'
+Took 0.0196 seconds                                                                                          
+hbase:007:0> put 'customer_profiles', 'CUST1001', 'info:status', 'Active'
+Took 0.0100 seconds                                                                                          
+hbase:008:0> put 'customer_profiles', 'CUST1001', 'info:data_usage', '8.5'
+Took 0.0140 seconds                                                                                          
+hbase:009:0> put 'customer_profiles', 'CUST1002', 'info:name', 'Priya'
+Took 0.0296 seconds                                                                                          
+hbase:010:0> put 'customer_profiles', 'CUST1002', 'info:city', 'Mysore'
+Took 0.0215 seconds                                                                                          
+hbase:011:0> put 'customer_profiles', 'CUST1002', 'info:mobile', '9876543211'
+Took 0.0242 seconds                                                                                          
+hbase:012:0> put 'customer_profiles', 'CUST1002', 'info:plan', 'Basic'
+Took 0.0198 seconds                                                                                          
+hbase:013:0> put 'customer_profiles', 'CUST1002', 'info:status', 'Active'
+Took 0.0168 seconds                                                                                          
+hbase:014:0> put 'customer_profiles', 'CUST1002', 'info:data_usage', '4.2'
+Took 0.0086 seconds                                                                                          
+hbase:015:0> put 'customer_profiles', 'CUST1003', 'info:name', 'Amit'
+Took 0.0164 seconds                                                                                          
+hbase:016:0> put 'customer_profiles', 'CUST1003', 'info:city', 'Chennai'
+Took 0.0043 seconds                                                                                          
+hbase:017:0> put 'customer_profiles', 'CUST1003', 'info:mobile', '9876543212'
+Took 0.0054 seconds                                                                                          
+hbase:018:0> put 'customer_profiles', 'CUST1003', 'info:plan', 'Premium'
+Took 0.0392 seconds                                                                                          
+hbase:019:0> put 'customer_profiles', 'CUST1003', 'info:status', 'Inactive'
+Took 0.0130 seconds                                                                                          
+hbase:020:0> put 'customer_profiles', 'CUST1003', 'info:data_usage', '12.7'
+Took 0.0119 seconds                                                                                          
+hbase:021:0> get 'customer_profiles', 'CUST1001'
+COLUMN                       CELL                                                                            
+ info:city                   timestamp=2026-10-04T13:08:12.828, value=Bangalore                              
+ info:data_usage             timestamp=2026-10-04T13:08:38.933, value=8.5                                    
+ info:mobile                 timestamp=2026-10-04T13:08:19.663, value=9876543210                             
+ info:name                   timestamp=2026-10-04T13:08:01.682, value=Rahul                                  
+ info:plan                   timestamp=2026-10-04T13:08:26.681, value=Premium                                
+ info:status                 timestamp=2026-10-04T13:08:32.233, value=Active                                 
+1 row(s)
+Took 0.0610 seconds                                                                                          
+hbase:022:0> get 'customer_profiles', 'CUST1002'
+COLUMN                       CELL                                                                            
+ info:city                   timestamp=2026-10-04T13:08:47.397, value=Mysore                                 
+ info:data_usage             timestamp=2026-10-04T13:08:49.299, value=4.2                                    
+ info:mobile                 timestamp=2026-10-04T13:08:47.433, value=9876543211                             
+ info:name                   timestamp=2026-10-04T13:08:47.351, value=Priya                                  
+ info:plan                   timestamp=2026-10-04T13:08:47.495, value=Basic                                  
+ info:status                 timestamp=2026-10-04T13:08:47.538, value=Active                                 
+1 row(s)
+Took 0.0272 seconds                                                                                          
+hbase:023:0> get 'customer_profiles', 'CUST1003'
+COLUMN                       CELL                                                                            
+ info:city                   timestamp=2026-10-04T13:08:55.222, value=Chennai                                
+ info:data_usage             timestamp=2026-10-04T13:08:56.082, value=12.7                                   
+ info:mobile                 timestamp=2026-10-04T13:08:55.285, value=9876543212                             
+ info:name                   timestamp=2026-10-04T13:08:55.154, value=Amit                                   
+ info:plan                   timestamp=2026-10-04T13:08:55.369, value=Premium                                
+ info:status                 timestamp=2026-10-04T13:08:55.415, value=Inactive                               
+1 row(s)
+Took 0.0215 seconds                                                                                          
+hbase:024:0> scan 'customer_profiles'
+ROW                          COLUMN+CELL                                                                     
+ CUST1001                    column=info:city, timestamp=2026-10-04T13:08:12.828, value=Bangalore            
+ CUST1001                    column=info:data_usage, timestamp=2026-10-04T13:08:38.933, value=8.5            
+ CUST1001                    column=info:mobile, timestamp=2026-10-04T13:08:19.663, value=9876543210         
+ CUST1001                    column=info:name, timestamp=2026-10-04T13:08:01.682, value=Rahul                
+ CUST1001                    column=info:plan, timestamp=2026-10-04T13:08:26.681, value=Premium              
+ CUST1001                    column=info:status, timestamp=2026-10-04T13:08:32.233, value=Active             
+ CUST1002                    column=info:city, timestamp=2026-10-04T13:08:47.397, value=Mysore               
+ CUST1002                    column=info:data_usage, timestamp=2026-10-04T13:08:49.299, value=4.2            
+ CUST1002                    column=info:mobile, timestamp=2026-10-04T13:08:47.433, value=9876543211         
+ CUST1002                    column=info:name, timestamp=2026-10-04T13:08:47.351, value=Priya                
+ CUST1002                    column=info:plan, timestamp=2026-10-04T13:08:47.495, value=Basic                
+ CUST1002                    column=info:status, timestamp=2026-10-04T13:08:47.538, value=Active             
+ CUST1003                    column=info:city, timestamp=2026-10-04T13:08:55.222, value=Chennai              
+ CUST1003                    column=info:data_usage, timestamp=2026-10-04T13:08:56.082, value=12.7           
+ CUST1003                    column=info:mobile, timestamp=2026-10-04T13:08:55.285, value=9876543212         
+ CUST1003                    column=info:name, timestamp=2026-10-04T13:08:55.154, value=Amit                 
+ CUST1003                    column=info:plan, timestamp=2026-10-04T13:08:55.369, value=Premium              
+ CUST1003                    column=info:status, timestamp=2026-10-04T13:08:55.415, value=Inactive           
+3 row(s)
+Took 0.0402 seconds                                                                                          
+hbase:025:0> count 'customer_profiles'
+3 row(s)
+Took 0.0362 seconds                                                                                          
+=> 3
+hbase:026:0> describe 'customer_profiles'
+Table customer_profiles is ENABLED                                                                           
+customer_profiles, {TABLE_ATTRIBUTES => {METADATA => {'hbase.store.file-tracker.impl' => 'DEFAULT'}}}        
+COLUMN FAMILIES DESCRIPTION                                                                                  
+{NAME => 'info', INDEX_BLOCK_ENCODING => 'NONE', VERSIONS => '1', KEEP_DELETED_CELLS => 'FALSE', DATA_BLOCK_E
+NCODING => 'NONE', TTL => 'FOREVER', MIN_VERSIONS => '0', REPLICATION_SCOPE => '0', BLOOMFILTER => 'ROW', IN_
+MEMORY => 'false', COMPRESSION => 'NONE', BLOCKCACHE => 'true', BLOCKSIZE => '65536 B (64KB)'}               
+
+1 row(s)
+Quota is disabled
+Took 0.1582 seconds                                                                                          
+hbase:028:0> put 'customer_profiles', 'CUST1001', 'info:plan', 'Gold'
+Took 0.0184 seconds                                                                                          
+hbase:029:0> get 'customer_profiles', 'CUST1001'
+COLUMN                       CELL                                                                            
+ info:city                   timestamp=2026-10-04T13:08:12.828, value=Bangalore                              
+ info:data_usage             timestamp=2026-10-04T13:08:38.933, value=8.5                                    
+ info:mobile                 timestamp=2026-10-04T13:08:19.663, value=9876543210                             
+ info:name                   timestamp=2026-10-04T13:08:01.682, value=Rahul                                  
+ info:plan                   timestamp=2026-10-04T13:10:11.739, value=Gold                                   
+ info:status                 timestamp=2026-10-04T13:08:32.233, value=Active                                 
+1 row(s)
+Took 0.0277 seconds                                                                                          
+hbase:030:0> put 'customer_profiles', 'CUST1001', 'info:data_usage', '11.2'
+Took 0.0052 seconds                                                                                          
+hbase:031:0> get 'customer_profiles', 'CUST1001'
+COLUMN                       CELL                                                                            
+ info:city                   timestamp=2026-10-04T13:08:12.828, value=Bangalore                              
+ info:data_usage             timestamp=2026-10-04T13:10:26.103, value=11.2                                   
+ info:mobile                 timestamp=2026-10-04T13:08:19.663, value=9876543210                             
+ info:name                   timestamp=2026-10-04T13:08:01.682, value=Rahul                                  
+ info:plan                   timestamp=2026-10-04T13:10:11.739, value=Gold                                   
+ info:status                 timestamp=2026-10-04T13:08:32.233, value=Active                                 
+1 row(s)
+Took 0.0101 seconds                                                                                          
+hbase:032:0> delete 'customer_profiles', 'CUST1001', 'info:mobile'
+Took 0.0126 seconds                                                                                          
+hbase:033:0> get 'customer_profiles', 'CUST1001'
+COLUMN                       CELL                                                                            
+ info:city                   timestamp=2026-10-04T13:08:12.828, value=Bangalore                              
+ info:data_usage             timestamp=2026-10-04T13:10:26.103, value=11.2                                   
+ info:name                   timestamp=2026-10-04T13:08:01.682, value=Rahul                                  
+ info:plan                   timestamp=2026-10-04T13:10:11.739, value=Gold                                   
+ info:status                 timestamp=2026-10-04T13:08:32.233, value=Active                                 
+1 row(s)
+Took 0.0105 seconds                                                                                          
+hbase:034:0> deleteall 'customer_profiles', 'CUST1003'
+Took 0.0133 seconds                                                                                          
+hbase:035:0> get 'customer_profiles', 'CUST1003'
+COLUMN                       CELL                                                                            
+0 row(s)
+Took 0.0040 seconds                                                                                          
+hbase:036:0> count 'customer_profiles'
+2 row(s)
+Took 0.0102 seconds                                                                                          
+=> 2
+hbase:037:0> disable 'customer_profiles'
+Took 0.3858 seconds                                                                                          
+hbase:038:0> is_disabled 'customer_profiles'
+true                                                                                                         
+Took 0.0190 seconds                                                                                          
+=> true
+hbase:039:0> drop 'customer_profiles'
+Took 0.1698 seconds                                                                                          
+hbase:040:0> list
+TABLE                                                                                                        
+cdac                                                                                                         
+customers                                                                                                    
+employee_attendance                                                                                          
+patient_analytics                                                                                            
+patient_visits                                                                                               
+student                                                                                                      
+transactions                                                                                                 
+7 row(s)
+Took 0.0162 seconds                                                                                          
+=> ["cdac", "customers", "employee_attendance", "patient_analytics", "patient_visits", "student", "transactions"]
+hbase:041:0> 
