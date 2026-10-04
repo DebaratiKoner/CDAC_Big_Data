@@ -1,0 +1,242 @@
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ nano learners.csv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ nano courses.csv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ nano enrollments.csv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ ls -l
+total 12
+-rw-rw-r-- 1 vboxuser vboxuser 46 Oct  4 13:30 courses.csv
+-rw-rw-r-- 1 vboxuser vboxuser 50 Oct  4 13:30 enrollments.csv
+-rw-rw-r-- 1 vboxuser vboxuser 98 Oct  4 13:30 learners.csv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ cat learners.csv
+L001,Rahul,Bangalore
+L002,Priya,Mysore
+L003,Amit,Chennai
+L004,Neha,Hyderabad
+L005,Ankit,Bangalore
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ cat courses.csv
+C001,Hadoop
+C002,Spark
+C003,Hive
+C004,Airflow
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ cat enrollments.csv
+L001,C001
+L001,C002
+L002,C001
+L003,C003
+L004,C002
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ hdfs dfs -mkdir -p /user/$USER/learning/courses
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ hdfs dfs -mkdir -p /user/$USER/learning/enrollments
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ hdfs dfs -ls /user/$USER/learning
+Found 2 items
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-04 13:32 /user/vboxuser/learning/courses
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-04 13:32 /user/vboxuser/learning/enrollments
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ hdfs dfs -put -f courses.csv /user/$USER/learning/courses/
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ hdfs dfs -ls /user/$USER/learning/courses
+Found 1 items
+-rw-r--r--   1 vboxuser supergroup         46 2026-10-04 13:33 /user/vboxuser/learning/courses/courses.csv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ hdfs dfs -cat /user/$USER/learning/courses/courses.csv
+C001,Hadoop
+C002,Spark
+C003,Hive
+C004,Airflow
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ hdfs dfs -put -f enrollments.csv /user/$USER/learning/enrollments/
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ hdfs dfs -ls /user/$USER/learning/enrollments
+Found 1 items
+-rw-r--r--   1 vboxuser supergroup         50 2026-10-04 13:33 /user/vboxuser/learning/enrollments/enrollments.csv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ hdfs dfs -cat /user/$USER/learning/enrollments/enrollments.csv
+L001,C001
+L001,C002
+L002,C001
+L003,C003
+L004,C002
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ jps
+4388 NameNode
+4741 SecondaryNameNode
+5062 NodeManager
+4934 ResourceManager
+4520 DataNode
+51978 Jps
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ echo $JAVA_HOME
+java -version
+hive --version
+/usr/lib/jvm/java-8-openjdk-amd64
+openjdk version "1.8.0_504"
+OpenJDK Runtime Environment (build 1.8.0_504-8u504-ga-1ubuntu1~26.04.3-b01)
+OpenJDK 64-Bit Server VM (build 25.504-b01, mixed mode)
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Hive 4.0.1
+Git git://MacBook-Pro.local/Users/zdeng/workspace/github/hive -r 3af4517eb8cfd9407ad34ed78a0b48b57dfaa264
+Compiled by zdeng on Thu Sep 26 10:27:41 CST 2024
+From source with checksum 45419248b246139ede889cd9bbd1c2ea
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ ss -ltnp | grep 9083
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ nohup hive --service metastore \
+> ~/metastore.log 2>&1 &
+[1] 53562
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ ss -ltnp | grep 9083
+LISTEN 0      50                 *:9083             *:*    users:(("java",pid=53562,fd=724))
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ pkill -f HiveServer2
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ rm -f ~/hiveserver2.log
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ nohup hive --service hiveserver2 \
+--hiveconf hive.server2.thrift.port=10001 \
+--hiveconf hive.server2.thrift.bind.host=127.0.0.1 \
+--hiveconf hive.metastore.uris=thrift://127.0.0.1:9083 \
+> ~/hiveserver2.log 2>&1 &
+[2] 53968
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ ss -ltnp | grep 10001
+LISTEN 0      50     [::ffff:127.0.0.1]:10001            *:*    users:(("java",pid=53968,fd=688))
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ ps -ef | grep HiveServer2 | grep -v grep
+vboxuser   53968   52660 19 13:38 pts/2    00:00:07 /usr/lib/jvm/java-8-openjdk-amd64/bin/java -Dproc_jar -Dproc_hiveserver2 -Dlog4j2.formatMsgNoLookups=true -Dlog4j.configurationFile=hive-log4j2.properties -Djava.util.logging.config.file=/usr/local/hive/conf/parquet-logging.properties -Djline.terminal=jline.UnsupportedTerminal -Dyarn.log.dir=/usr/local/hadoop/logs -Dyarn.log.file=hadoop.log -Dyarn.home.dir=/usr/local/hadoop -Dyarn.root.logger=INFO,console -Djava.library.path=/usr/local/hadoop/lib/native -Xmx256m -Dhadoop.log.dir=/usr/local/hadoop/logs -Dhadoop.log.file=hadoop.log -Dhadoop.home.dir=/usr/local/hadoop -Dhadoop.id.str=vboxuser -Dhadoop.root.logger=INFO,console -Dhadoop.policy.file=hadoop-policy.xml -Dhadoop.security.logger=INFO,NullAppender org.apache.hadoop.util.RunJar /usr/local/hive/lib/hive-service-4.0.1.jar org.apache.hive.service.server.HiveServer2 --hiveconf hive.server2.thrift.port=10001 --hiveconf hive.server2.thrift.bind.host=127.0.0.1 --hiveconf hive.metastore.uris=thrift://127.0.0.1:9083
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ tail -50 ~/hiveserver2.log
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+2026-10-04 13:38:40: Starting HiveServer2
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Hive Session ID = d88b0772-c189-421b-acdf-526c18aaec99
+Hive Session ID = 19db05d5-32ba-48be-ac80-806fef176733
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ beeline -u jdbc:hive2://localhost:10001
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/hive/lib/log4j-slf4j-impl-2.18.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-reload4j-1.7.36.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Connecting to jdbc:hive2://localhost:10001
+Connected to: Apache Hive (version 4.0.1)
+Driver: Hive JDBC (version 4.0.1)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+Beeline version 4.0.1 by Apache Hive
+0: jdbc:hive2://localhost:10001> CREATE DATABASE IF NOT EXISTS learning_db;
+INFO  : Compiling command(queryId=vboxuser_20261004134022_22204a2f-08ff-4c44-85cb-4120f69d3ae2): CREATE DATABASE IF NOT EXISTS learning_db
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=vboxuser_20261004134022_22204a2f-08ff-4c44-85cb-4120f69d3ae2); Time taken: 0.93 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=vboxuser_20261004134022_22204a2f-08ff-4c44-85cb-4120f69d3ae2): CREATE DATABASE IF NOT EXISTS learning_db
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=vboxuser_20261004134022_22204a2f-08ff-4c44-85cb-4120f69d3ae2); Time taken: 1.356 seconds
+No rows affected (2.458 seconds)
+0: jdbc:hive2://localhost:10001> USE learning_db;
+INFO  : Compiling command(queryId=vboxuser_20261004134031_924fbc4c-74a5-4ff0-86e0-4b9ea2a6ae23): USE learning_db
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=vboxuser_20261004134031_924fbc4c-74a5-4ff0-86e0-4b9ea2a6ae23); Time taken: 0.032 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=vboxuser_20261004134031_924fbc4c-74a5-4ff0-86e0-4b9ea2a6ae23): USE learning_db
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=vboxuser_20261004134031_924fbc4c-74a5-4ff0-86e0-4b9ea2a6ae23); Time taken: 0.006 seconds
+No rows affected (0.098 seconds)
+0: jdbc:hive2://localhost:10001> SELECT current_database();
+INFO  : Compiling command(queryId=vboxuser_20261004134036_b345671a-d2a4-4f54-a4ab-e7106af58bdc): SELECT current_database()
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:_c0, type:string, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=vboxuser_20261004134036_b345671a-d2a4-4f54-a4ab-e7106af58bdc); Time taken: 2.459 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=vboxuser_20261004134036_b345671a-d2a4-4f54-a4ab-e7106af58bdc): SELECT current_database()
+INFO  : Completed executing command(queryId=vboxuser_20261004134036_b345671a-d2a4-4f54-a4ab-e7106af58bdc); Time taken: 0.0 seconds
++--------------+
+|     _c0      |
++--------------+
+| learning_db  |
++--------------+
+1 row selected (2.716 seconds)
+0: jdbc:hive2://localhost:10001> CREATE TABLE learners_managed (
+. . . . . . . . . . . . . . . .>     learner_id STRING,
+. . . . . . . . . . . . . . . .>     learner_name STRING,
+. . . . . . . . . . . . . . . .>     city STRING
+. . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . .> ROW FORMAT DELIMITED
+. . . . . . . . . . . . . . . .> FIELDS TERMINATED BY ',';
+INFO  : Compiling command(queryId=vboxuser_20261004134049_1feff93f-c5a9-4ba8-9d86-deb030026b69): CREATE TABLE learners_managed (
+learner_id STRING,
+learner_name STRING,
+city STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=vboxuser_20261004134049_1feff93f-c5a9-4ba8-9d86-deb030026b69); Time taken: 0.03 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=vboxuser_20261004134049_1feff93f-c5a9-4ba8-9d86-deb030026b69): CREATE TABLE learners_managed (
+learner_id STRING,
+learner_name STRING,
+city STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=vboxuser_20261004134049_1feff93f-c5a9-4ba8-9d86-deb030026b69); Time taken: 0.529 seconds
+No rows affected (0.57 seconds)
+0: jdbc:hive2://localhost:10001> LOAD DATA LOCAL INPATH '/home/vboxuser/CDAC_Big_Data/hive/online-learning/learners.csv'
+. . . . . . . . . . . . . . . .> INTO TABLE learners_managed;
+INFO  : Compiling command(queryId=vboxuser_20261004134100_b9594abf-ac22-4b0c-9ab6-36980117843e): LOAD DATA LOCAL INPATH '/home/vboxuser/CDAC_Big_Data/hive/online-learning/learners.csv'
+INTO TABLE learners_managed
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=vboxuser_20261004134100_b9594abf-ac22-4b0c-9ab6-36980117843e); Time taken: 0.231 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=vboxuser_20261004134100_b9594abf-ac22-4b0c-9ab6-36980117843e): LOAD DATA LOCAL INPATH '/home/vboxuser/CDAC_Big_Data/hive/online-learning/learners.csv'
+INTO TABLE learners_managed
+INFO  : Starting task [Stage-0:MOVE] in serial mode
+INFO  : Loading data to table learning_db.learners_managed from file:/home/vboxuser/CDAC_Big_Data/hive/online-learning/learners.csv
+INFO  : Starting task [Stage-1:STATS] in serial mode
+INFO  : Executing stats task
+INFO  : Table learning_db.learners_managed stats: [numFiles=1, numRows=0, totalSize=98, rawDataSize=0, numFilesErasureCoded=0]
+INFO  : Completed executing command(queryId=vboxuser_20261004134100_b9594abf-ac22-4b0c-9ab6-36980117843e); Time taken: 0.372 seconds
+No rows affected (0.622 seconds)
+0: jdbc:hive2://localhost:10001> SELECT * FROM learners_managed;
+INFO  : Compiling command(queryId=vboxuser_20261004134113_bf42998e-7024-46e6-bb52-32a889825678): SELECT * FROM learners_managed
+INFO  : No Stats for learning_db@learners_managed, Columns: learner_id, city, learner_name
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Created Hive schema: Schema(fieldSchemas:[FieldSchema(name:learners_managed.learner_id, type:string, comment:null), FieldSchema(name:learners_managed.learner_name, type:string, comment:null), FieldSchema(name:learners_managed.city, type:string, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=vboxuser_20261004134113_bf42998e-7024-46e6-bb52-32a889825678); Time taken: 0.191 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=vboxuser_20261004134113_bf42998e-7024-46e6-bb52-32a889825678): SELECT * FROM learners_managed
+INFO  : Completed executing command(queryId=vboxuser_20261004134113_bf42998e-7024-46e6-bb52-32a889825678); Time taken: 0.0 seconds
++------------------------------+--------------------------------+------------------------+
+| learners_managed.learner_id  | learners_managed.learner_name  | learners_managed.city  |
++------------------------------+--------------------------------+------------------------+
+| L001                         | Rahul                          | Bangalore              |
+| L002                         | Priya                          | Mysore                 |
+| L003                         | Amit                           | Chennai                |
+| L004                         | Neha                           | Hyderabad              |
+| L005                         | Ankit                          | Bangalore              |
++------------------------------+--------------------------------+------------------------+
+5 rows selected (0.305 seconds)
+0: jdbc:hive2://localhost:10001> Closing: 0: jdbc:hive2://localhost:10001
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ hdfs dfs -mkdir -p /user/$USER/learning/courses
+hdfs dfs -mkdir -p /user/$USER/learning/enrollments
+
+hdfs dfs -put -f courses.csv /user/$USER/learning/courses/
+hdfs dfs -put -f enrollments.csv /user/$USER/learning/enrollments/
+
+hdfs dfs -ls -R /user/$USER/learning
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-04 13:41 /user/vboxuser/learning/courses
+-rw-r--r--   1 vboxuser supergroup         46 2026-10-04 13:41 /user/vboxuser/learning/courses/courses.csv
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-04 13:41 /user/vboxuser/learning/enrollments
+-rw-r--r--   1 vboxuser supergroup         50 2026-10-04 13:41 /user/vboxuser/learning/enrollments/enrollments.csv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/hive/online-learning$ 
