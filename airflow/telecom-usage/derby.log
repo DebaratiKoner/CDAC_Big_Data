@@ -1,0 +1,151 @@
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.replication.master in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.resultSetStatisticsFactory in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.NoneAuthentication in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.lockManagerJ6 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.log.readonly in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.jdbcJ8 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.resourceAdapterJ2 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.validation in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.lcf in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.optimizer in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.XPLAINFactory in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.javaCompiler in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.tcf in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.dataDictionary in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.jdk.cacheManagerJ6 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.ef in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.dvfJ2 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.jdk.dvfJ2 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.daemon in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.cacheManagerJ6 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.data.genericJ4 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.timerJ1 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.jdk.rawStore.data.genericJ4 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.data.genericJ1 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.basicAuthentication in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.jdk.rawStore.data.genericJ1 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.classes.JNDIAuthentication in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.database in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.transaction in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.streams in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.classes.dvfJ2 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.jdk.mgmt.jmx in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.nativeAuthentication in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.jdk.cryptographyJ2 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.access.sort in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.classes.jdbcJ8 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.classes.cryptographyJ2 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.classes.rawStore.data.genericJ4 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.jdk.jdbcJ8 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.jdk.lockManagerJ6 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.cryptographyJ2 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.specificAuthentication in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.mgmt.jmx in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.netServer.autoStart in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.access.uniquewithduplicatenullssort in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.classManagerJ2 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.JNDIAuthentication in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.rawStore.log in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.access.heap in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.database.slave in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.jdk.resourceAdapterJ2 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.mgmt.null in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.env.classes.resourceAdapterJ2 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.access in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.replication.slave in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.lf in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.uuidJ1 in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.access.btree in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main] Ignored duplicate property derby.module.rawStore in jar:file:/usr/local/hive/lib/hive-druid-handler-4.0.1.jar!/org/apache/derby/modules.properties
+Mon Oct 05 07:18:55 UTC 2026 Thread[main,5,main]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+----------------------------------------------------------------
+Mon Oct 05 07:18:55 UTC 2026:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-01a1-0aee-0bee-000003e4ed20 
+on database directory /home/vboxuser/ecommerce-elt/metastore_db with class loader sun.misc.Launcher$AppClassLoader@3c09711b 
+Loaded from file:/usr/local/hive/lib/derby-10.14.2.0.jar
+java.vendor=Ubuntu
+java.runtime.version=1.8.0_504-8u504-ga-1ubuntu1~26.04.3-b01
+user.dir=/home/vboxuser/CDAC_Big_Data/airflow/telecom-usage
+os.name=Linux
+os.arch=amd64
+os.version=7.0.0-34-generic
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+Mon Oct 05 07:22:18 UTC 2026 Thread[Metastore-Handler-Pool: Thread-75,5,main] (XID = 11773), (SESSIONID = 5), (DATABASE = /home/vboxuser/ecommerce-elt/metastore_db), (DRDAID = null), Cleanup action starting
+Mon Oct 05 07:22:18 UTC 2026 Thread[Metastore-Handler-Pool: Thread-75,5,main] (XID = 11773), (SESSIONID = 5), (DATABASE = /home/vboxuser/ecommerce-elt/metastore_db), (DRDAID = null), Failed Statement is: SELECT B0.CTLG_NAME,B0.DATACONNECTOR_NAME,B0.CREATE_TIME,B0."DESC",B0.DB_LOCATION_URI,B0.DB_MANAGED_LOCATION_URI,B0."NAME",B0.OWNER_NAME,B0.OWNER_TYPE,B0.REMOTE_DBNAME,B0."TYPE",B0.DB_ID,C0.INPUT_FORMAT,C0.IS_COMPRESSED,C0.IS_STOREDASSUBDIRECTORIES,C0.LOCATION,C0.NUM_BUCKETS,C0.OUTPUT_FORMAT,C0.SD_ID,A0.VIEW_EXPANDED_TEXT,A0.VIEW_ORIGINAL_TEXT FROM TBLS A0 LEFT OUTER JOIN DBS B0 ON A0.DB_ID = B0.DB_ID LEFT OUTER JOIN SDS C0 ON A0.SD_ID = C0.SD_ID WHERE A0.TBL_ID = ? with 1 parameters begin parameter #1: 87 :end parameter 
+ERROR 40001: A lock could not be obtained due to a deadlock, cycle of locks and waiters is:
+Lock : ROW, SDS, (9,12)
+  Waiting XID : {11773, S} , APP, SELECT B0.CTLG_NAME,B0.DATACONNECTOR_NAME,B0.CREATE_TIME,B0."DESC",B0.DB_LOCATION_URI,B0.DB_MANAGED_LOCATION_URI,B0."NAME",B0.OWNER_NAME,B0.OWNER_TYPE,B0.REMOTE_DBNAME,B0."TYPE",B0.DB_ID,C0.INPUT_FORMAT,C0.IS_COMPRESSED,C0.IS_STOREDASSUBDIRECTORIES,C0.LOCATION,C0.NUM_BUCKETS,C0.OUTPUT_FORMAT,C0.SD_ID,A0.VIEW_EXPANDED_TEXT,A0.VIEW_ORIGINAL_TEXT FROM TBLS A0 LEFT OUTER JOIN DBS B0 ON A0.DB_ID = B0.DB_ID LEFT OUTER JOIN SDS C0 ON A0.SD_ID = C0.SD_ID WHERE A0.TBL_ID = ?
+  Granted XID : {11730, X} 
+Lock : ROW, TBLS, (9,12)
+  Waiting XID : {11730, X} , APP, UPDATE TBLS SET SD_ID=? WHERE TBL_ID=?
+  Granted XID : {11773, S} 
+. The selected victim is XID : 11773.
+	at org.apache.derby.iapi.error.StandardException.newException(StandardException.java:290)
+	at org.apache.derby.iapi.error.StandardException.newException(StandardException.java:285)
+	at org.apache.derby.impl.services.locks.Deadlock.buildException(Deadlock.java:557)
+	at org.apache.derby.impl.services.locks.ConcurrentLockSet.lockObject(ConcurrentLockSet.java:647)
+	at org.apache.derby.impl.services.locks.AbstractPool.lockObject(AbstractPool.java:120)
+	at org.apache.derby.impl.services.locks.ConcurrentPool.lockObject(ConcurrentPool.java:28)
+	at org.apache.derby.impl.store.raw.xact.RowLocking2.lockRecordForRead(RowLocking2.java:166)
+	at org.apache.derby.impl.store.access.heap.HeapController.lockRow(HeapController.java:530)
+	at org.apache.derby.impl.store.access.heap.HeapController.lockRow(HeapController.java:654)
+	at org.apache.derby.impl.store.access.btree.index.B2IRowLocking3.lockRowOnPage(B2IRowLocking3.java:306)
+	at org.apache.derby.impl.store.access.btree.index.B2IRowLocking3._lockScanRow(B2IRowLocking3.java:590)
+	at org.apache.derby.impl.store.access.btree.index.B2IRowLockingRR.lockScanRow(B2IRowLockingRR.java:104)
+	at org.apache.derby.impl.store.access.btree.BTreeForwardScan.fetchRows(BTreeForwardScan.java:313)
+	at org.apache.derby.impl.store.access.btree.BTreeScan.fetchNext(BTreeScan.java:1600)
+	at org.apache.derby.impl.sql.execute.TableScanResultSet.loopControl(TableScanResultSet.java:451)
+	at org.apache.derby.impl.sql.execute.TableScanResultSet.getNextRowCore(TableScanResultSet.java:491)
+	at org.apache.derby.impl.sql.execute.IndexRowToBaseRowResultSet.getNextRowCore(IndexRowToBaseRowResultSet.java:346)
+	at org.apache.derby.impl.sql.execute.NestedLoopLeftOuterJoinResultSet.getNextRowCore(NestedLoopLeftOuterJoinResultSet.java:107)
+	at org.apache.derby.impl.sql.execute.ProjectRestrictResultSet.getNextRowCore(ProjectRestrictResultSet.java:287)
+	at org.apache.derby.impl.sql.execute.BasicNoPutResultSetImpl.getNextRow(BasicNoPutResultSetImpl.java:488)
+	at org.apache.derby.impl.jdbc.EmbedResultSet.movePosition(EmbedResultSet.java:450)
+	at org.apache.derby.impl.jdbc.EmbedResultSet.next(EmbedResultSet.java:394)
+	at org.apache.hive.com.zaxxer.hikari.pool.HikariProxyResultSet.next(HikariProxyResultSet.java)
+	at org.datanucleus.store.rdbms.request.FetchRequest.execute(FetchRequest.java:460)
+	at org.datanucleus.store.rdbms.RDBMSPersistenceHandler.fetchObject(RDBMSPersistenceHandler.java:317)
+	at org.datanucleus.state.StateManagerImpl.loadFieldsFromDatastore(StateManagerImpl.java:1548)
+	at org.datanucleus.state.StateManagerImpl.loadUnloadedFields(StateManagerImpl.java:3866)
+	at org.datanucleus.api.jdo.state.Hollow.transitionRetrieve(Hollow.java:169)
+	at org.datanucleus.state.StateManagerImpl.retrieve(StateManagerImpl.java:977)
+	at org.datanucleus.ExecutionContextImpl.retrieveObject(ExecutionContextImpl.java:1677)
+	at org.datanucleus.ExecutionContextThreadedImpl.retrieveObject(ExecutionContextThreadedImpl.java:208)
+	at org.datanucleus.api.jdo.JDOPersistenceManager.jdoRetrieve(JDOPersistenceManager.java:609)
+	at org.datanucleus.api.jdo.JDOPersistenceManager.retrieve(JDOPersistenceManager.java:626)
+	at org.datanucleus.api.jdo.JDOPersistenceManager.retrieve(JDOPersistenceManager.java:635)
+	at org.apache.hadoop.hive.metastore.ObjectStore.getMTable(ObjectStore.java:2130)
+	at org.apache.hadoop.hive.metastore.ObjectStore.getMTable(ObjectStore.java:2168)
+	at org.apache.hadoop.hive.metastore.ObjectStore.getTable(ObjectStore.java:1696)
+	at org.apache.hadoop.hive.metastore.ObjectStore.getTable(ObjectStore.java:1737)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.hadoop.hive.metastore.RawStoreProxy.invoke(RawStoreProxy.java:97)
+	at com.sun.proxy.$Proxy27.getTable(Unknown Source)
+	at org.apache.hadoop.hive.metastore.HMSHandler.get_table_core(HMSHandler.java:3777)
+	at org.apache.hadoop.hive.metastore.HMSHandler.getTableInternal(HMSHandler.java:3668)
+	at org.apache.hadoop.hive.metastore.HMSHandler.get_table_req(HMSHandler.java:3645)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.hadoop.hive.metastore.RetryingHMSHandler.invokeInternal(RetryingHMSHandler.java:91)
+	at org.apache.hadoop.hive.metastore.AbstractHMSHandlerProxy.invoke(AbstractHMSHandlerProxy.java:82)
+	at com.sun.proxy.$Proxy28.get_table_req(Unknown Source)
+	at org.apache.hadoop.hive.metastore.api.ThriftHiveMetastore$Processor$get_table_req.getResult(ThriftHiveMetastore.java:20655)
+	at org.apache.hadoop.hive.metastore.api.ThriftHiveMetastore$Processor$get_table_req.getResult(ThriftHiveMetastore.java:20634)
+	at org.apache.thrift.ProcessFunction.process(ProcessFunction.java:38)
+	at org.apache.hadoop.hive.metastore.TUGIBasedProcessor$1.run(TUGIBasedProcessor.java:111)
+	at org.apache.hadoop.hive.metastore.TUGIBasedProcessor$1.run(TUGIBasedProcessor.java:107)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1899)
+	at org.apache.hadoop.hive.metastore.TUGIBasedProcessor.process(TUGIBasedProcessor.java:119)
+	at org.apache.thrift.server.TThreadPoolServer$WorkerProcess.run(TThreadPoolServer.java:250)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Cleanup action completed
