@@ -1,1 +1,139 @@
+vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ sudo apt update
+vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ sudo apt install -y python3.11 python3.11-venv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ python3.11 --version
+vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ rm -rf ~/spark3-venv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ python3.11 -m venv ~/spark3-venv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ source ~/spark3-venv/bin/activate
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ python --version
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ pip install --upgrade pip
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ pip install pyspark==3.5.7
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ pyspark --version
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ mkdir -p ~/CDAC_Big_Data/pyspark/spark-mapreduce-lab/input
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ mkdir -p ~/CDAC_Big_Data/pyspark/spark-mapreduce-lab/output
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ find .
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ nano input/employees.csv
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ cat input/employees.csv
+emp_id,name,department,salary
+101,Rahul,IT,60000
+102,Priya,HR,45000
+103,Arun,IT,70000
+104,Neha,Finance,55000
+105,Kiran,HR,50000
+106,Anita,Finance,65000
+107,Ravi,IT,80000
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ nano employee_salary.py
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ python3 -m py_compile employee_salary.py
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ ls
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ jps
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ start-all.sh
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ hdfs dfs -ls /user/$USER
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ hdfs dfs -mkdir -p /user/$USER
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ hdfs dfs -mkdir -p /user/$USER/spark-mapreduce-lab/input
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ hdfs dfs -put -f input/employees.csv /user/$USER/spark-mapreduce-lab/input/
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ hdfs dfs -ls /user/$USER/spark-mapreduce-lab/input
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ cat employee_salary.py
+from pyspark import SparkConf, SparkContext
 
+# Create Spark configuration
+conf = SparkConf() \
+    .setAppName("EmployeeSalaryAnalysis") \
+    .setMaster("local[*]")
+
+# Create SparkContext
+sc = SparkContext(conf=conf)
+
+# Read input file from LOCAL filesystem
+input_path = "file:///home/vboxuser/CDAC_Big_Data/pyspark/spark-mapreduce-lab/input/employees.csv"
+
+lines = sc.textFile(input_path)
+
+# Remove header
+header = lines.first()
+data = lines.filter(lambda line: line != header)
+
+# MAP
+# (department, (salary, employee_count))
+mapped = data.map(
+    lambda line: (
+        line.split(",")[2],
+        (int(line.split(",")[3]), 1)
+    )
+)
+
+# REDUCE
+# Add salary and employee count
+reduced = mapped.reduceByKey(
+    lambda x, y: (
+        x[0] + y[0],
+        x[1] + y[1]
+    )
+)
+
+# Calculate average salary
+result = reduced.mapValues(
+    lambda x: (
+        x[1],
+        x[0],
+        x[0] / x[1]
+    )
+)
+
+# Sort by department
+sorted_result = result.sortByKey()
+
+# Display result
+print("\nDepartment Salary Analysis")
+print("----------------------------------------")
+
+for department, values in sorted_result.collect():
+    employee_count = values[0]
+    total_salary = values[1]
+    average_salary = values[2]
+
+    print(
+        department,
+        employee_count,
+        total_salary,
+        average_salary
+    )
+
+# Prepare output
+output = sorted_result.map(
+    lambda x: (
+        x[0],
+        x[1][0],
+        x[1][1],
+        x[1][2]
+    )
+)
+
+# Remove previous output if it exists
+import os
+import shutil
+
+output_path = "/home/vboxuser/CDAC_Big_Data/pyspark/spark-mapreduce-lab/output/department_salary"
+
+if os.path.exists(output_path):
+    shutil.rmtree(output_path)
+
+# Save output locally
+output.map(
+    lambda x: ",".join(map(str, x))
+).coalesce(1).saveAsTextFile(
+    "file://" + output_path
+)
+
+# Stop Spark
+sc.stop()
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ ls output
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ rm -rf output/department_salary
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ spark-submit employee_salary.py
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ find output/department_salary -type f
+output/department_salary/.part-00000.crc
+output/department_salary/_SUCCESS
+output/department_salary/._SUCCESS.crc
+output/department_salary/part-00000
+(spark3-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/pyspark/spark-mapreduce-lab$ cat output/department_salary/part-00000
+Finance,2,120000,60000.0
+HR,2,95000,47500.0
+IT,3,210000,70000.0
