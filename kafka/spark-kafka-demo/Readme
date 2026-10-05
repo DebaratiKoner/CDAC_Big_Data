@@ -1,1 +1,82 @@
+vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka$ python3 -m venv sparkenv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka$ source ~/CDAC_Big_Data/kafka/sparkenv/bin/activate
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka$ pip install --upgrade pip
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka$ pip install pyspark==3.5.1
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka$ wget https://archive.apache.org/dist/kafka/3.7.0/kafka_2.13-3.7.0.tgz
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka$ tar -xzf kafka_2.13-3.7.0.tgz
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka$ ls ~/CDAC_Big_Data/kafka/kafka_2.13-3.7.0
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka$ mkdir spark-kafka-demo
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka$ cd spark-kafka-demo
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/spark-kafka-demo$ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/spark-kafka-demo$ java -version
+openjdk version "1.8.0_504"
+OpenJDK Runtime Environment (build 1.8.0_504-8u504-ga-1ubuntu1~26.04.3-b01)
+OpenJDK 64-Bit Server VM (build 25.504-b01, mixed mode)
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/spark-kafka-demo$ cd ~/CDAC_Big_Data/kafka/kafka_2.13-3.7.0
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/kafka_2.13-3.7.0$ bin/kafka-server-start.sh config/kraft/server.properties
+vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/spark-kafka-demo$ cd ~/CDAC_Big_Data/kafka/kafka_2.13-3.7.0
+vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/kafka_2.13-3.7.0$ KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
+bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c config/kraft/server.properties
+metaPropertiesEnsemble=MetaPropertiesEnsemble(metadataLogDir=Optional.empty, dirs={/tmp/kraft-combined-logs: EMPTY})
+Formatting /tmp/kraft-combined-logs with metadata.version 3.7-IV4.
+vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/kafka_2.13-3.7.0$ bin/kafka-server-start.sh config/kraft/server.properties
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/spark-kafka-demo$ pip install kafka-python-ng
+Collecting kafka-python-ng
+  Downloading kafka_python_ng-2.2.3-py2.py3-none-any.whl.metadata (9.7 kB)
+Downloading kafka_python_ng-2.2.3-py2.py3-none-any.whl (232 kB)
+Installing collected packages: kafka-python-ng
+Successfully installed kafka-python-ng-2.2.3
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/spark-kafka-demo$ python producer.py
+Sent: {'order_id': 1, 'category': 'Grocery', 'city': 'Hyderabad', 'amount': 302.61, 'event_time': '2026-10-05 11:52:22'}
+Sent: {'order_id': 2, 'category': 'Clothing', 'city': 'Hyderabad', 'amount': 1286.64, 'event_time': '2026-10-05 11:52:23'}
+Sent: {'order_id': 3, 'category': 'Electronics', 'city': 'Delhi', 'amount': 4588.47, 'event_time': '2026-10-05 11:52:23'}
+Sent: {'order_id': 4, 'category': 'Grocery', 'city': 'Bengaluru', 'amount': 81.68, 'event_time': '2026-10-05 11:52:24'}
+Sent: {'order_id': 5, 'category': 'Electronics', 'city': 'Mumbai', 'amount': 4536.61, 'event_time': '2026-10-05 11:52:24'}
+Sent: {'order_id': 6, 'category': 'Clothing', 'city': 'Bengaluru', 'amount': 938.38, 'event_time': '2026-10-05 11:52:25'}
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/spark-kafka-demo$ nano producer.py
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/spark-kafka-demo$ nano consumer.py
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/spark-kafka-demo$ spark-submit \
+--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1 \
+consumer.py
+---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   11  |   11  |   11  |   0   ||   11  |   11  |
+	---------------------------------------------------------------------
+------------------------------------------
+Batch: 0
+-------------------------------------------
++------+--------+-------+------+
+|window|category|revenue|orders|
++------+--------+-------+------+
++------+--------+-------+------+
+
+26/10/05 11:49:10 WARN ProcessingTimeExecutor: Current batch is falling behind. The trigger interval is 10000 milliseconds, but spent 24884 milliseconds
+-------------------------------------------
+Batch: 1
+-------------------------------------------
++------------------------------------------+-----------+------------------+------+
+|window                                    |category   |revenue           |orders|
++------------------------------------------+-----------+------------------+------+
+|{2026-10-05 11:52:00, 2026-10-05 11:53:00}|Books      |1652.9100000000003|5     |
+|{2026-10-05 11:52:00, 2026-10-05 11:53:00}|Clothing   |4898.73           |5     |
+|{2026-10-05 11:52:00, 2026-10-05 11:53:00}|Electronics|9125.08           |2     |
+|{2026-10-05 11:52:00, 2026-10-05 11:53:00}|Grocery    |861.36            |3     |
++------------------------------------------+-----------+------------------+------+
+boxuser@Ubuntu2:~/CDAC_Big_Data/kafka/kafka_2.13-3.7.0$ bin/kafka-topics.sh --list --bootstrap-server localhost:9092
+orders
+vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/kafka_2.13-3.7.0$ bin/kafka-console-consumer.sh \
+--topic orders \
+--bootstrap-server localhost:9092 \
+--from-beginning
+{"order_id": 1, "category": "Grocery", "city": "Hyderabad", "amount": 302.61, "event_time": "2026-10-05 11:52:22"}
+{"order_id": 2, "category": "Clothing", "city": "Hyderabad", "amount": 1286.64, "event_time": "2026-10-05 11:52:23"}
+{"order_id": 3, "category": "Electronics", "city": "Delhi", "amount": 4588.47, "event_time": "2026-10-05 11:52:23"}
+{"order_id": 4, "category": "Grocery", "city": "Bengaluru", "amount": 81.68, "event_time": "2026-10-05 11:52:24"}
+{"order_id": 5, "category": "Electronics", "city": "Mumbai", "amount": 4536.61, "event_time": "2026-10-05 11:52:24"}
+{"order_id": 6, "category": "Clothing", "city": "Bengaluru", "amount": 938.38, "event_time": "2026-10-05 11:52:25"}
+{"order_id": 7, "category": "Grocery", "city": "Hyderabad", "amount": 477.07, "event_time": "2026-10-05 11:52:25"}
+
 
