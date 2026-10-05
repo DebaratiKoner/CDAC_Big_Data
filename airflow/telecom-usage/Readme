@@ -1,1 +1,620 @@
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ jps
+4417 SecondaryNameNode
+4049 NameNode
+4722 NodeManager
+4594 ResourceManager
+4181 DataNode
+5527 RunJar
+5258 RunJar
+28620 Jps
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ find . -maxdepth 3 -type f | sort
+./dags/telecom_usage_dag.py
+./derby.log
+./sql/01_create_raw_table.sql
+./sql/02_load_raw_table.sql
+./sql/03_create_final_table.sql
+./sql/derby.log
+./telecom_usage.csv
+./telecom_usage_dag.py
+./telecom_usage_no_header.csv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ cat telecom_usage.csv
+usage_id,customer_id,plan,call_minutes,sms_count,data_gb,usage_date,circle
+U001,C101,Premium,450,120,8.5,2026-09-25,Bangalore
+U002,C102,Basic,120,45,2.3,2026-09-25,Mysore
+U003,C103,Premium,620,180,15.2,2026-09-25,Bangalore
+U004,C104,Basic,210,60,4.5,2026-09-26,Chennai
+U005,C105,Premium,580,150,10.5,2026-09-26,Hyderabad
+U006,C106,Basic,95,30,1.8,2026-09-26,Mangalore
+U007,C107,Premium,710,220,18.7,2026-09-27,Bangalore
+U008,C108,Basic,165,55,6.2,2026-09-27,Mysore
+U009,C109,Premium,490,135,9.9,2026-09-27,Chennai
+U010,C110,Basic,250,75,10.0,2026-09-28,Hyderabad
+U011,C111,Premium,530,160,12.4,2026-09-28,Bangalore
+U012,C112,Basic,140,40,3.7,2026-09-28,Mangalore
+U013,C113,Premium,680,200,20.1,2026-09-29,Chennai
+U014,C114,Basic,190,65,7.5,2026-09-29,Mysore
+U015,C115,Premium,455,110,9.5,2026-09-29,Hyderabad
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ head telecom_usage.csv
+usage_id,customer_id,plan,call_minutes,sms_count,data_gb,usage_date,circle
+U001,C101,Premium,450,120,8.5,2026-09-25,Bangalore
+U002,C102,Basic,120,45,2.3,2026-09-25,Mysore
+U003,C103,Premium,620,180,15.2,2026-09-25,Bangalore
+U004,C104,Basic,210,60,4.5,2026-09-26,Chennai
+U005,C105,Premium,580,150,10.5,2026-09-26,Hyderabad
+U006,C106,Basic,95,30,1.8,2026-09-26,Mangalore
+U007,C107,Premium,710,220,18.7,2026-09-27,Bangalore
+U008,C108,Basic,165,55,6.2,2026-09-27,Mysore
+U009,C109,Premium,490,135,9.9,2026-09-27,Chennai
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ ls -l ~/airflow/dags/
+total 12
+drwxrwxr-x 2 vboxuser vboxuser 4096 Oct  5 05:38 __pycache__
+-rw-rw-r-- 1 vboxuser vboxuser 6324 Oct  5 05:38 telecom_usage_dag.py
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ ls -l ~/airflow/dags/telecom_usage_dag.py
+-rw-rw-r-- 1 vboxuser vboxuser 6324 Oct  5 05:38 /home/vboxuser/airflow/dags/telecom_usage_dag.py
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ cat ~/airflow/dags/telecom_usage_dag.py
+from datetime import datetime
 
+from airflow import DAG
+from airflow.providers.standard.operators.bash import BashOperator
+
+
+# ============================================================
+# PROJECT PATHS
+# ============================================================
+
+PROJECT_HOME = "/home/vboxuser/CDAC_Big_Data/airflow/telecom-usage"
+
+SQL_DIR = f"{PROJECT_HOME}/sql"
+
+CSV_FILE = f"{PROJECT_HOME}/telecom_usage.csv"
+
+
+# ============================================================
+# HDFS PATH
+# ============================================================
+
+HDFS_DIR = "/user/vboxuser/telecom_usage/raw"
+
+HDFS_FILE = f"{HDFS_DIR}/telecom_usage.csv"
+
+
+# ============================================================
+# DEFAULT ARGUMENTS
+# ============================================================
+
+default_args = {
+    "owner": "data-engineering",
+    "retries": 1,
+}
+
+
+# ============================================================
+# DAG
+# ============================================================
+
+with DAG(
+    dag_id="telecom_usage_etl",
+    default_args=default_args,
+    start_date=datetime(2026, 10, 1),
+    schedule=None,
+    catchup=False,
+    tags=["telecom", "hdfs", "hive", "etl"],
+) as dag:
+
+    # ========================================================
+    # TASK 1: UPLOAD CSV TO HDFS
+    # ========================================================
+
+    upload_raw_data_to_hdfs = BashOperator(
+        task_id="upload_raw_data_to_hdfs",
+
+        bash_command=f"""
+        export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+        export HADOOP_HOME=/usr/local/hadoop
+        export HIVE_HOME=/usr/local/hive
+        export PATH=$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HIVE_HOME/bin:$PATH
+
+        echo "========================================="
+        echo "Uploading telecom CSV to HDFS"
+        echo "========================================="
+
+        hdfs dfs -mkdir -p {HDFS_DIR}
+
+        hdfs dfs -put -f {CSV_FILE} {HDFS_FILE}
+
+        echo "HDFS contents:"
+
+        hdfs dfs -ls {HDFS_DIR}
+        """,
+    )
+
+
+    # ========================================================
+    # TASK 2: CREATE HIVE RAW TABLE
+    # ========================================================
+
+    create_hive_raw_table = BashOperator(
+        task_id="create_hive_raw_table",
+
+        bash_command=f"""
+        export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+        export HADOOP_HOME=/usr/local/hadoop
+        export HIVE_HOME=/usr/local/hive
+        export PATH=$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HIVE_HOME/bin:$PATH
+
+        echo "========================================="
+        echo "Creating Hive raw table"
+        echo "========================================="
+
+        beeline -u "jdbc:hive2://localhost:10001" \
+        -f {SQL_DIR}/01_create_raw_table.sql
+        """,
+    )
+
+
+    # ========================================================
+    # TASK 3: LOAD DATA INTO HIVE RAW TABLE
+    # ========================================================
+
+    load_hive_raw_table = BashOperator(
+        task_id="load_hive_raw_table",
+
+        bash_command=f"""
+        export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+        export HADOOP_HOME=/usr/local/hadoop
+        export HIVE_HOME=/usr/local/hive
+        export PATH=$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HIVE_HOME/bin:$PATH
+
+        echo "========================================="
+        echo "Loading data into Hive raw table"
+        echo "========================================="
+
+        beeline -u "jdbc:hive2://localhost:10001" \
+        -f {SQL_DIR}/02_load_raw_table.sql
+        """,
+    )
+
+
+    # ========================================================
+    # TASK 4: CREATE FINAL TABLE + TRANSFORMATION
+    # ========================================================
+
+    create_hive_final_table = BashOperator(
+        task_id="create_hive_final_table",
+
+        bash_command=f"""
+        export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+        export HADOOP_HOME=/usr/local/hadoop
+        export HIVE_HOME=/usr/local/hive
+        export PATH=$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HIVE_HOME/bin:$PATH
+
+        echo "========================================="
+        echo "Creating Hive final table"
+        echo "========================================="
+
+        beeline -u "jdbc:hive2://localhost:10001" \
+        -f {SQL_DIR}/03_create_final_table.sql
+        """,
+    )
+
+
+    # ========================================================
+    # TASK 5: VERIFY FINAL OUTPUT
+    # ========================================================
+
+    verify_final_output = BashOperator(
+        task_id="verify_final_output",
+
+        bash_command="""
+        export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+        export HADOOP_HOME=/usr/local/hadoop
+        export HIVE_HOME=/usr/local/hive
+        export PATH=$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HIVE_HOME/bin:$PATH
+
+        echo "========================================="
+        echo "VERIFYING RAW TABLE"
+        echo "========================================="
+
+        beeline -u "jdbc:hive2://localhost:10001" -e "
+        SELECT COUNT(*) AS raw_count
+        FROM telecom_usage_raw;
+        "
+
+        echo "========================================="
+        echo "VERIFYING FINAL TABLE"
+        echo "========================================="
+
+        beeline -u "jdbc:hive2://localhost:10001" -e "
+        SELECT
+            usage_id,
+            customer_id,
+            plan,
+            data_gb,
+            circle,
+            usage_category
+        FROM telecom_usage_final;
+        "
+
+        echo "========================================="
+        echo "VERIFYING USAGE CATEGORIES"
+        echo "========================================="
+
+        beeline -u "jdbc:hive2://localhost:10001" -e "
+        SELECT
+            usage_category,
+            COUNT(*) AS count
+        FROM telecom_usage_final
+        GROUP BY usage_category;
+        "
+        """,
+    )
+
+
+    # ========================================================
+    # TASK DEPENDENCIES
+    # ========================================================
+
+    (
+        upload_raw_data_to_hdfs
+        >> create_hive_raw_table
+        >> load_hive_raw_table
+        >> create_hive_final_table
+        >> verify_final_output
+    )
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ readlink -f ~/airflow/dags/telecom_usage_dag.py
+/home/vboxuser/airflow/dags/telecom_usage_dag.py
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ hdfs dfs -ls /
+Found 13 items
+drwxr-xr-x   - vboxuser supergroup          0 2026-09-24 04:22 /banking
+drwxr-xr-x   - vboxuser supergroup          0 2026-09-22 18:24 /college
+drwxr-xr-x   - vboxuser supergroup          0 2026-09-25 15:05 /corporate_api
+drwxr-xr-x   - vboxuser supergroup          0 2026-09-28 10:38 /data
+drwxr-xr-x   - vboxuser supergroup          0 2026-09-25 09:42 /ecommerce
+drwxr-xr-x   - vboxuser supergroup          0 2026-09-28 04:17 /healthcare
+drwxr-xr-x   - vboxuser supergroup          0 2026-09-30 01:57 /healthcare-elt
+drwxr-xr-x   - vboxuser supergroup          0 2026-09-25 04:04 /iot
+drwxrwxrwt   - vboxuser supergroup          0 2026-09-30 12:20 /mr-history
+drwxr-xr-x   - vboxuser supergroup          0 2026-09-24 14:57 /smart-factory
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-05 04:03 /telecom
+drwxrwxrwt   - vboxuser supergroup          0 2026-09-28 15:01 /tmp
+drwxr-xr-x   - vboxuser supergroup          0 2026-09-28 14:27 /user
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ hdfs dfs -ls /telecom
+Found 5 items
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-05 05:06 /telecom/input
+drwxr-xr-x   - vboxuser supergroup          0 2026-09-24 08:48 /telecom/network-errors
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-01 04:52 /telecom/output
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-01 09:24 /telecom/raw
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-01 04:52 /telecom/transformed
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ hdfs dfs -ls /telecom/raw
+Found 2 items
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-01 05:36 /telecom/raw/customer_usage_new
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-01 05:22 /telecom/raw/customer_usage_test
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ hdfs dfs -cat /telecom/raw/telecom_usage.csv
+cat: `/telecom/raw/telecom_usage.csv': No such file or directory
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ hdfs dfs -ls -R / | grep -i telecom
+-rwxrwx---   1 vboxuser supergroup      26795 2026-10-01 05:40 /mr-history/tmp/vboxuser/job_1790829652655_0006-1790833151343-vboxuser-CREATE+TABLE+telecom_......%0AAND+data_gb+%3E%3D+0-1790833199908-1-1-SUCCEEDED-default-1790833159637.jhist
+-rwxrwx---   1 vboxuser supergroup      26494 2026-10-01 05:40 /mr-history/tmp/vboxuser/job_1790829652655_0007-1790833213076-vboxuser-CREATE+TABLE+telecom_......UP+BY+customer_id+%28St-1790833237280-1-1-SUCCEEDED-default-1790833221353.jhist
+-rwxrwx---   1 vboxuser supergroup      25084 2026-10-01 05:41 /mr-history/tmp/vboxuser/job_1790829652655_0008-1790833241413-vboxuser-CREATE+TABLE+telecom_......UP+BY+customer_id+%28St-1790833270050-1-1-SUCCEEDED-default-1790833253698.jhist
+-rwxrwx---   1 vboxuser supergroup      25166 2026-10-04 19:34 /mr-history/tmp/vboxuser/job_1791109403584_0038-1791142417341-vboxuser-SELECT+COUNT%28*%29+FROM+telecom_usage_raw+%28Stag-1791142482036-1-1-SUCCEEDED-default-1791142424178.jhist
+-rwxrwx---   1 vboxuser supergroup      26539 2026-10-04 19:37 /mr-history/tmp/vboxuser/job_1791109403584_0039-1791142620852-vboxuser-INSERT+INTO+TABLE+tel......telecom_usage_raw+%28St-1791142649992-1-1-SUCCEEDED-default-1791142627159.jhist
+-rwxrwx---   1 vboxuser supergroup      25181 2026-10-04 19:38 /mr-history/tmp/vboxuser/job_1791109403584_0040-1791142675603-vboxuser-SELECT+COUNT%28*%29+FROM+telecom_usage_final+%28St-1791142695663-1-1-SUCCEEDED-default-1791142684106.jhist
+-rwxrwx---   1 vboxuser supergroup      14039 2026-10-04 20:16 /mr-history/tmp/vboxuser/job_1791144707425_0001-1791144864344-vboxuser-INSERT+INTO+TABLE+tel......telecom_usage_raw+%28St-1791145007853-1-0-KILLED-default-1791144963889.jhist
+-rwxrwx---   1 vboxuser supergroup      25172 2026-10-05 04:14 /mr-history/tmp/vboxuser/job_1791172997493_0001-1791173614410-vboxuser-SELECT+COUNT%28*%29+FROM+telecom_usage_raw+%28Stag-1791173661056-1-1-SUCCEEDED-default-1791173632800.jhist
+-rwxrwx---   1 vboxuser supergroup      26545 2026-10-05 04:15 /mr-history/tmp/vboxuser/job_1791172997493_0002-1791173673853-vboxuser-CREATE+TABLE+telecom_......telecom_usage_raw+%28St-1791173743171-1-1-SUCCEEDED-default-1791173684097.jhist
+-rwxrwx---   1 vboxuser supergroup      16615 2026-10-05 05:48 /mr-history/tmp/vboxuser/job_1791172997493_0004-1791179264694-vboxuser-SELECT+COUNT%28*%29+FROM+telecom_usage_raw+%28Stag-1791179332556-0-1-SUCCEEDED-default-1791179278682.jhist
+-rwxrwx---   1 vboxuser supergroup      26545 2026-10-05 07:23 /mr-history/tmp/vboxuser/job_1791184620072_0001-1791184960620-vboxuser-CREATE+TABLE+telecom_......telecom_usage_raw+%28St-1791184995885-1-1-SUCCEEDED-default-1791184975770.jhist
+-rwxrwx---   1 vboxuser supergroup      25187 2026-10-05 07:24 /mr-history/tmp/vboxuser/job_1791184620072_0002-1791185010789-vboxuser-SELECT+COUNT%28*%29+AS+ra......telecom_usage_raw+-1791185067916-1-1-SUCCEEDED-default-1791185035964.jhist
+-rwxrwx---   1 vboxuser supergroup      26550 2026-10-05 08:16 /mr-history/tmp/vboxuser/job_1791184620072_0004-1791188093665-vboxuser-CREATE+TABLE+telecom_......telecom_usage_raw+%28St-1791188167726-1-1-SUCCEEDED-default-1791188138313.jhist
+-rwxrwx---   1 vboxuser supergroup      25185 2026-10-05 08:17 /mr-history/tmp/vboxuser/job_1791184620072_0005-1791188189593-vboxuser-SELECT+COUNT%28*%29+AS+ra......telecom_usage_raw+-1791188230332-1-1-SUCCEEDED-default-1791188205471.jhist
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-05 04:03 /telecom
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-05 05:06 /telecom/input
+-rw-r--r--   1 vboxuser supergroup        734 2026-10-05 05:06 /telecom/input/telecom_usage_no_header.csv
+drwxr-xr-x   - vboxuser supergroup          0 2026-09-24 08:48 /telecom/network-errors
+drwxr-xr-x   - vboxuser supergroup          0 2026-09-24 08:44 /telecom/network-errors/input
+-rw-r--r--   1 vboxuser supergroup        196 2026-09-24 08:44 /telecom/network-errors/input/network_logs.csv
+drwxr-xr-x   - vboxuser supergroup          0 2026-09-24 08:48 /telecom/network-errors/output
+-rw-r--r--   1 vboxuser supergroup          0 2026-09-24 08:48 /telecom/network-errors/output/_SUCCESS
+-rw-r--r--   1 vboxuser supergroup         36 2026-09-24 08:48 /telecom/network-errors/output/part-r-00000
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-01 04:52 /telecom/output
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-01 09:24 /telecom/raw
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-01 05:36 /telecom/raw/customer_usage_new
+-rw-r--r--   1 vboxuser supergroup          0 2026-10-01 05:36 /telecom/raw/customer_usage_new/_SUCCESS
+-rw-r--r--   1 vboxuser supergroup        466 2026-10-01 05:36 /telecom/raw/customer_usage_new/part-m-00000
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-01 05:22 /telecom/raw/customer_usage_test
+-rw-r--r--   1 vboxuser supergroup          0 2026-10-01 05:22 /telecom/raw/customer_usage_test/_SUCCESS
+-rw-r--r--   1 vboxuser supergroup        466 2026-10-01 05:22 /telecom/raw/customer_usage_test/part-m-00000
+drwxr-xr-x   - vboxuser supergroup          0 2026-10-01 04:52 /telecom/transformed
+-rwxrwx---   1 vboxuser supergroup      22619 2026-09-24 08:48 /tmp/hadoop-yarn/staging/history/done/2026/09/24/000000/job_1790227477309_0002-1790239696562-vboxuser-Telecom+Network+Error+Analysis-1790239715995-1-1-SUCCEEDED-default-1790239704405.jhist
+drwxr-xr-x   - vboxuser  supergroup          0 2026-10-04 20:22 /user/hive/warehouse/telecom_db.db
+drwxr-xr-x   - vboxuser  supergroup          0 2026-10-04 20:22 /user/hive/warehouse/telecom_db.db/telecom_usage_final
+drwxr-xr-x   - vboxuser  supergroup          0 2026-10-04 20:22 /user/hive/warehouse/telecom_db.db/telecom_usage_final/.hive-staging_hive_2026-10-04_20-22-53_523_3508481800357199619-26
+drwxr-xr-x   - vboxuser  supergroup          0 2026-10-04 20:22 /user/hive/warehouse/telecom_db.db/telecom_usage_final/.hive-staging_hive_2026-10-04_20-22-53_523_3508481800357199619-26/-ext-10001
+drwxr-xr-x   - vboxuser  supergroup          0 2026-10-04 20:22 /user/hive/warehouse/telecom_db.db/telecom_usage_final/.hive-staging_hive_2026-10-04_20-22-53_523_3508481800357199619-26/-tmp.-ext-10002
+drwxr-xr-x   - vboxuser  supergroup          0 2026-10-01 05:41 /user/hive/warehouse/telecom_dw.db
+drwxr-xr-x   - vboxuser  supergroup          0 2026-10-01 05:39 /user/hive/warehouse/telecom_dw.db/customer_usage_fact
+-rw-r--r--   1 vboxuser  supergroup        500 2026-10-01 05:39 /user/hive/warehouse/telecom_dw.db/customer_usage_fact/000000_0
+drwxr-xr-x   - vboxuser  supergroup          0 2026-10-01 05:40 /user/hive/warehouse/telecom_dw.db/customer_usage_summary
+-rw-r--r--   1 vboxuser  supergroup        196 2026-10-01 05:40 /user/hive/warehouse/telecom_dw.db/customer_usage_summary/000000_0
+drwxr-xr-x   - vboxuser  supergroup          0 2026-10-05 08:15 /user/hive/warehouse/telecom_usage_final
+-rw-r--r--   1 vboxuser  supergroup        879 2026-10-05 08:15 /user/hive/warehouse/telecom_usage_final/000000_0
+drwxr-xr-x   - vboxuser  supergroup          0 2026-10-05 08:14 /user/hive/warehouse/telecom_usage_raw
+-rw-r--r--   1 vboxuser  supergroup        809 2026-10-05 08:13 /user/hive/warehouse/telecom_usage_raw/telecom_usage.csv
+drwxr-xr-x   - vboxuser  supergroup          0 2026-10-04 19:20 /user/vboxuser/telecom_usage
+drwxr-xr-x   - vboxuser  supergroup          0 2026-10-05 08:14 /user/vboxuser/telecom_usage/raw
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ hdfs dfs -ls -R / | grep "telecom_usage.csv"
+-rw-r--r--   1 vboxuser  supergroup        809 2026-10-05 08:13 /user/hive/warehouse/telecom_usage_raw/telecom_usage.csv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ beeline -u jdbc:hive2://localhost:10001
+0: jdbc:hive2://localhost:10001> show tables;
++-------------------------+
+|        tab_name         |
++-------------------------+
+| customer_order_summary  |
+| customers_raw           |
+| daily_sales_summary     |
+| orders_partitioned      |
+| orders_raw              |
+| orders_transformed      |
+| telecom_usage_final     |
+| telecom_usage_raw       |
++-------------------------+
+8 rows selected (0.225 seconds)
+0: jdbc:hive2://localhost:10001> show databases;
++-------------------+
+|   database_name   |
++-------------------+
+| default           |
+| ecommerce_dw      |
+| healthcare_elt    |
+| learning_db       |
+| mobile_analytics  |
+| telecom_db        |
+| telecom_dw        |
++-------------------+
+7 rows selected (0.152 seconds)
+0: jdbc:hive2://localhost:10001> DESCRIBE telecom_usage_raw;
++---------------+------------+----------+
+|   col_name    | data_type  | comment  |
++---------------+------------+----------+
+| usage_id      | string     |          |
+| customer_id   | string     |          |
+| plan          | string     |          |
+| call_minutes  | int        |          |
+| sms_count     | int        |          |
+| data_gb       | double     |          |
+| usage_date    | date       |          |
+| circle        | string     |          |
++---------------+------------+----------+
+8 rows selected (0.162 seconds)
+0: jdbc:hive2://localhost:10001> DESCRIBE telecom_usage_final;
++-----------------+------------+----------+
+|    col_name     | data_type  | comment  |
++-----------------+------------+----------+
+| usage_id        | string     |          |
+| customer_id     | string     |          |
+| plan            | string     |          |
+| call_minutes    | int        |          |
+| sms_count       | int        |          |
+| data_gb         | double     |          |
+| usage_date      | date       |          |
+| circle          | string     |          |
+| usage_category  | string     |          |
++-----------------+------------+----------+
+9 rows selected (0.662 seconds)
+0: jdbc:hive2://localhost:10001> SELECT * FROM telecom_usage_raw;
++-----------------------------+--------------------------------+-------------------------+---------------------------------+------------------------------+----------------------------+-------------------------------+---------------------------+
+| telecom_usage_raw.usage_id  | telecom_usage_raw.customer_id  | telecom_usage_raw.plan  | telecom_usage_raw.call_minutes  | telecom_usage_raw.sms_count  | telecom_usage_raw.data_gb  | telecom_usage_raw.usage_date  | telecom_usage_raw.circle  |
++-----------------------------+--------------------------------+-------------------------+---------------------------------+------------------------------+----------------------------+-------------------------------+---------------------------+
+| U001                        | C101                           | Premium                 | 450                             | 120                          | 8.5                        | 2026-09-25                    | Bangalore                 |
+| U002                        | C102                           | Basic                   | 120                             | 45                           | 2.3                        | 2026-09-25                    | Mysore                    |
+| U003                        | C103                           | Premium                 | 620                             | 180                          | 15.2                       | 2026-09-25                    | Bangalore                 |
+| U004                        | C104                           | Basic                   | 210                             | 60                           | 4.5                        | 2026-09-26                    | Chennai                   |
+| U005                        | C105                           | Premium                 | 580                             | 150                          | 10.5                       | 2026-09-26                    | Hyderabad                 |
+| U006                        | C106                           | Basic                   | 95                              | 30                           | 1.8                        | 2026-09-26                    | Mangalore                 |
+| U007                        | C107                           | Premium                 | 710                             | 220                          | 18.7                       | 2026-09-27                    | Bangalore                 |
+| U008                        | C108                           | Basic                   | 165                             | 55                           | 6.2                        | 2026-09-27                    | Mysore                    |
+| U009                        | C109                           | Premium                 | 490                             | 135                          | 9.9                        | 2026-09-27                    | Chennai                   |
+| U010                        | C110                           | Basic                   | 250                             | 75                           | 10.0                       | 2026-09-28                    | Hyderabad                 |
+| U011                        | C111                           | Premium                 | 530                             | 160                          | 12.4                       | 2026-09-28                    | Bangalore                 |
+| U012                        | C112                           | Basic                   | 140                             | 40                           | 3.7                        | 2026-09-28                    | Mangalore                 |
+| U013                        | C113                           | Premium                 | 680                             | 200                          | 20.1                       | 2026-09-29                    | Chennai                   |
+| U014                        | C114                           | Basic                   | 190                             | 65                           | 7.5                        | 2026-09-29                    | Mysore                    |
+| U015                        | C115                           | Premium                 | 455                             | 110                          | 9.5                        | 2026-09-29                    | Hyderabad                 |
++-----------------------------+--------------------------------+-------------------------+---------------------------------+------------------------------+----------------------------+-------------------------------+---------------------------+
+15 rows selected (0.492 seconds)
+0: jdbc:hive2://localhost:10001> SELECT COUNT(*) FROM telecom_usage_raw;
++------+
+| _c0  |
++------+
+| 16   |
++------+
+1 row selected (34.172 seconds)
+0: jdbc:hive2://localhost:10001> SELECT * FROM telecom_usage_raw LIMIT 5;
++-----------------------------+--------------------------------+-------------------------+---------------------------------+------------------------------+----------------------------+-------------------------------+---------------------------+
+| telecom_usage_raw.usage_id  | telecom_usage_raw.customer_id  | telecom_usage_raw.plan  | telecom_usage_raw.call_minutes  | telecom_usage_raw.sms_count  | telecom_usage_raw.data_gb  | telecom_usage_raw.usage_date  | telecom_usage_raw.circle  |
++-----------------------------+--------------------------------+-------------------------+---------------------------------+------------------------------+----------------------------+-------------------------------+---------------------------+
+| U001                        | C101                           | Premium                 | 450                             | 120                          | 8.5                        | 2026-09-25                    | Bangalore                 |
+| U002                        | C102                           | Basic                   | 120                             | 45                           | 2.3                        | 2026-09-25                    | Mysore                    |
+| U003                        | C103                           | Premium                 | 620                             | 180                          | 15.2                       | 2026-09-25                    | Bangalore                 |
+| U004                        | C104                           | Basic                   | 210                             | 60                           | 4.5                        | 2026-09-26                    | Chennai                   |
+| U005                        | C105                           | Premium                 | 580                             | 150                          | 10.5                       | 2026-09-26                    | Hyderabad                 |
++-----------------------------+--------------------------------+-------------------------+---------------------------------+------------------------------+----------------------------+-------------------------------+---------------------------+
+5 rows selected (0.327 seconds)
+0: jdbc:hive2://localhost:10001> SELECT * FROM telecom_usage_final;
++-------------------------------+----------------------------------+---------------------------+-----------------------------------+--------------------------------+------------------------------+---------------------------------+-----------------------------+-------------------------------------+
+| telecom_usage_final.usage_id  | telecom_usage_final.customer_id  | telecom_usage_final.plan  | telecom_usage_final.call_minutes  | telecom_usage_final.sms_count  | telecom_usage_final.data_gb  | telecom_usage_final.usage_date  | telecom_usage_final.circle  | telecom_usage_final.usage_category  |
++-------------------------------+----------------------------------+---------------------------+-----------------------------------+--------------------------------+------------------------------+---------------------------------+-----------------------------+-------------------------------------+
+| usage_id                      | customer_id                      | plan                      | NULL                              | NULL                           | NULL                         | NULL                            | circle                      | NORMAL                              |
+| U001                          | C101                             | Premium                   | 450                               | 120                            | 8.5                          | 2026-09-25                      | Bangalore                   | NORMAL                              |
+| U002                          | C102                             | Basic                     | 120                               | 45                             | 2.3                          | 2026-09-25                      | Mysore                      | NORMAL                              |
+| U003                          | C103                             | Premium                   | 620                               | 180                            | 15.2                         | 2026-09-25                      | Bangalore                   | HIGH                                |
+| U004                          | C104                             | Basic                     | 210                               | 60                             | 4.5                          | 2026-09-26                      | Chennai                     | NORMAL                              |
+| U005                          | C105                             | Premium                   | 580                               | 150                            | 10.5                         | 2026-09-26                      | Hyderabad                   | HIGH                                |
+| U006                          | C106                             | Basic                     | 95                                | 30                             | 1.8                          | 2026-09-26                      | Mangalore                   | NORMAL                              |
+| U007                          | C107                             | Premium                   | 710                               | 220                            | 18.7                         | 2026-09-27                      | Bangalore                   | HIGH                                |
+| U008                          | C108                             | Basic                     | 165                               | 55                             | 6.2                          | 2026-09-27                      | Mysore                      | NORMAL                              |
+| U009                          | C109                             | Premium                   | 490                               | 135                            | 9.9                          | 2026-09-27                      | Chennai                     | NORMAL                              |
+| U010                          | C110                             | Basic                     | 250                               | 75                             | 10.0                         | 2026-09-28                      | Hyderabad                   | HIGH                                |
+| U011                          | C111                             | Premium                   | 530                               | 160                            | 12.4                         | 2026-09-28                      | Bangalore                   | HIGH                                |
+| U012                          | C112                             | Basic                     | 140                               | 40                             | 3.7                          | 2026-09-28                      | Mangalore                   | NORMAL                              |
+| U013                          | C113                             | Premium                   | 680                               | 200                            | 20.1                         | 2026-09-29                      | Chennai                     | HIGH                                |
+| U014                          | C114                             | Basic                     | 190                               | 65                             | 7.5                          | 2026-09-29                      | Mysore                      | NORMAL                              |
+| U015                          | C115                             | Premium                   | 455                               | 110                            | 9.5                          | 2026-09-29                      | Hyderabad                   | NORMAL                              |
++-------------------------------+----------------------------------+---------------------------+-----------------------------------+--------------------------------+------------------------------+---------------------------------+-----------------------------+-------------------------------------+
+16 rows selected (0.284 seconds)
+0: jdbc:hive2://localhost:10001> SELECT COUNT(*) FROM telecom_usage_final;
++------+
+| _c0  |
++------+
+| 16   |
++------+
+1 row selected (28.476 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     usage_id,
+. . . . . . . . . . . . . . . .>     customer_id,
+. . . . . . . . . . . . . . . .>     data_gb,
+. . . . . . . . . . . . . . . .>     usage_category
+. . . . . . . . . . . . . . . .> FROM telecom_usage_final;
++-----------+--------------+----------+-----------------+
+| usage_id  | customer_id  | data_gb  | usage_category  |
++-----------+--------------+----------+-----------------+
+| usage_id  | customer_id  | NULL     | NORMAL          |
+| U001      | C101         | 8.5      | NORMAL          |
+| U002      | C102         | 2.3      | NORMAL          |
+| U003      | C103         | 15.2     | HIGH            |
+| U004      | C104         | 4.5      | NORMAL          |
+| U005      | C105         | 10.5     | HIGH            |
+| U006      | C106         | 1.8      | NORMAL          |
+| U007      | C107         | 18.7     | HIGH            |
+| U008      | C108         | 6.2      | NORMAL          |
+| U009      | C109         | 9.9      | NORMAL          |
+| U010      | C110         | 10.0     | HIGH            |
+| U011      | C111         | 12.4     | HIGH            |
+| U012      | C112         | 3.7      | NORMAL          |
+| U013      | C113         | 20.1     | HIGH            |
+| U014      | C114         | 7.5      | NORMAL          |
+| U015      | C115         | 9.5      | NORMAL          |
++-----------+--------------+----------+-----------------+
+16 rows selected (0.222 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     usage_id,
+. . . . . . . . . . . . . . . .>     data_gb,
+. . . . . . . . . . . . . . . .>     usage_category
+. . . . . . . . . . . . . . . .> FROM telecom_usage_final
+. . . . . . . . . . . . . . . .> WHERE data_gb >= 10;
++-----------+----------+-----------------+
+| usage_id  | data_gb  | usage_category  |
++-----------+----------+-----------------+
+| U003      | 15.2     | HIGH            |
+| U005      | 10.5     | HIGH            |
+| U007      | 18.7     | HIGH            |
+| U010      | 10.0     | HIGH            |
+| U011      | 12.4     | HIGH            |
+| U013      | 20.1     | HIGH            |
++-----------+----------+-----------------+
+6 rows selected (0.36 seconds)
+0: jdbc:hive2://localhost:10001> SELECT
+. . . . . . . . . . . . . . . .>     usage_id,
+. . . . . . . . . . . . . . . .>     data_gb,
+. . . . . . . . . . . . . . . .>     usage_category
+. . . . . . . . . . . . . . . .> FROM telecom_usage_final
+. . . . . . . . . . . . . . . .> WHERE data_gb < 10;
++-----------+----------+-----------------+
+| usage_id  | data_gb  | usage_category  |
++-----------+----------+-----------------+
+| U001      | 8.5      | NORMAL          |
+| U002      | 2.3      | NORMAL          |
+| U004      | 4.5      | NORMAL          |
+| U006      | 1.8      | NORMAL          |
+| U008      | 6.2      | NORMAL          |
+| U009      | 9.9      | NORMAL          |
+| U012      | 3.7      | NORMAL          |
+| U014      | 7.5      | NORMAL          |
+| U015      | 9.5      | NORMAL          |
++-----------+----------+-----------------+
+9 rows selected (0.204 seconds)
+0: jdbc:hive2://localhost:10001> SELECT usage_category, COUNT(*)
+. . . . . . . . . . . . . . . .> FROM telecom_usage_final
+. . . . . . . . . . . . . . . .> GROUP BY usage_category;
++-----------------+------+
+| usage_category  | _c1  |
++-----------------+------+
+| HIGH            | 6    |
+| NORMAL          | 10   |
++-----------------+------+
+2 rows selected (28.859 seconds)
+0: jdbc:hive2://localhost:10001> cd ~/CDAC_Big_Data/airflow/telecom-usage
+. . . . . . . . . . . . . . . .> ls -l sql/
+. . . . . . . . . . . . . . . .> Closing: 0: jdbc:hive2://localhost:10001
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ cd ~/CDAC_Big_Data/airflow/telecom-usage
+ls -l sql/
+total 196
+-rw-rw-r-- 1 vboxuser vboxuser    355 Oct  5 04:06 01_create_raw_table.sql
+-rw-rw-r-- 1 vboxuser vboxuser    100 Oct  5 05:46 02_load_raw_table.sql
+-rw-rw-r-- 1 vboxuser vboxuser    321 Oct  5 04:07 03_create_final_table.sql
+-rw-rw-r-- 1 vboxuser vboxuser 186109 Oct  5 04:10 derby.log
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ cat sql/01_create_raw_table.sql
+DROP TABLE IF EXISTS telecom_usage_raw;
+
+CREATE TABLE telecom_usage_raw (
+    usage_id STRING,
+    customer_id STRING,
+    plan STRING,
+    call_minutes INT,
+    sms_count INT,
+    data_gb DOUBLE,
+    usage_date DATE,
+    circle STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+TBLPROPERTIES (
+    "skip.header.line.count"="1"
+);
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ cat sql/02_load_raw_table.sql
+LOAD DATA INPATH '/user/vboxuser/telecom_usage/raw/telecom_usage.csv'
+INTO TABLE telecom_usage_raw;
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ cat sql/03_create_final_table.sql
+DROP TABLE IF EXISTS telecom_usage_final;
+
+CREATE TABLE telecom_usage_final
+AS
+SELECT
+    usage_id,
+    customer_id,
+    plan,
+    call_minutes,
+    sms_count,
+    data_gb,
+    usage_date,
+    circle,
+    CASE
+        WHEN data_gb >= 10 THEN 'HIGH'
+        ELSE 'NORMAL'
+    END AS usage_category
+FROM telecom_usage_raw;
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ find . -type f -name "*.sql" -print
+./sql/01_create_raw_table.sql
+./sql/03_create_final_table.sql
+./sql/02_load_raw_table.sql
+vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ source ~/airflow-venv/bin/activate
+(airflow-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ airflow version
+3.3.2
+(airflow-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ airflow dags list | grep telecom
+telecom_usage_etl                                 | /home/vboxuser/airflow/dags/telecom_usage_dag.py  | data-engineering | False     | dags-folder                                      | None          
+(airflow-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ airflow tasks list telecom_usage_etl
+2026-10-05T09:32:59.704791Z [warning  ] FileType is deprecated. Simply open files after parsing arguments. [py.warnings] category=PendingDeprecationWarning filename=/home/vboxuser/airflow-venv/lib/python3.14/site-packages/airflow/cli/cli_config.py lineno=646
+2026-10-05T09:32:59.706292Z [warning  ] FileType is deprecated. Simply open files after parsing arguments. [py.warnings] category=PendingDeprecationWarning filename=/home/vboxuser/airflow-venv/lib/python3.14/site-packages/airflow/cli/cli_config.py lineno=868
+create_hive_final_table
+create_hive_raw_table
+load_hive_raw_table
+upload_raw_data_to_hdfs
+verify_final_output
+(airflow-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ airflow dags list-runs -d telecom_usage_etl
+(airflow-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ airflow dags list-runs telecom_usage_etl
+(airflow-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ airflow dags test telecom_usage_etl 2026-10-05
+(airflow-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ airflow dags trigger telecom_usage_etl
+(airflow-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ airflow standalone
+(airflow-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ airflow api-server
+(airflow-venv) vboxuser@Ubuntu2:~/CDAC_Big_Data/airflow/telecom-usage$ cat ~/airflow/simple_auth_manager_passwords.json.generated
+{"admin": "Axu6DNEgBG96s2Rv"}
