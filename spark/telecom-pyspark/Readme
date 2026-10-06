@@ -1,1 +1,110 @@
+(pyspark-java8) vboxuser@Ubuntu2:~/telecom-pyspark$ nano data/telecom_customers.csv
+(pyspark-java8) vboxuser@Ubuntu2:~/telecom-pyspark$ nano telecom_eda_rdd.py
+(pyspark-java8) vboxuser@Ubuntu2:~/telecom-pyspark$ source ~/pyspark-java8/bin/activate
+(pyspark-java8) vboxuser@Ubuntu2:~/telecom-pyspark$ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
+(pyspark-java8) vboxuser@Ubuntu2:~/telecom-pyspark$ python --version
+pyspark --version
+java -version
+Python 3.11.17
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 3.1.3
+      /_/
+openjdk version "1.8.0_504"
+(pyspark-java8) vboxuser@Ubuntu2:~/telecom-pyspark$ source ~/pyspark-java8/bin/activate
+(pyspark-java8) vboxuser@Ubuntu2:~/telecom-pyspark$ pip uninstall -y pyspark py4j
+(pyspark-java8) vboxuser@Ubuntu2:~/telecom-pyspark$ pip install pyspark==3.4.4
+(pyspark-java8) vboxuser@Ubuntu2:~/telecom-pyspark$ pyspark --version
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 3.4.4
+      /_/
+(pyspark-java8) vboxuser@Ubuntu2:~/telecom-pyspark$ python -c "import pyspark; print(pyspark.__version__)"
+3.4.4
+(pyspark-java8) vboxuser@Ubuntu2:~/telecom-pyspark$ spark-submit telecom_eda_rdd.py
++-----------+------+----+---------+------------+------+-------+
+|customer_id|  name| age|     city|monthly_bill|tenure|   plan|
++-----------+------+----+---------+------------+------+-------+
+|       C001| Rahul|  28|Bengaluru|         599|    12|Premium|
+|       C002| Priya|  35|   Mumbai|         799|    24|Premium|
+|       C003|  Amit|  42|    Delhi|         450|    36|  Basic|
+|       C004|  Neha|null|Bengaluru|         699|    18|Premium|
+|       C005|  Arun|  31|  Chennai|        null|    10|  Basic|
+|       C006| Kiran|  27|   Mumbai|         999|    30|Premium|
+|       C007| Divya|  45|    Delhi|         550|    48|  Basic|
+|       C008|  Ravi|  29|Bengaluru|         650|    15|Premium|
+|       C009| Anita|  38|  Chennai|         500|  null|  Basic|
+|       C010|Suresh|  52|   Mumbai|        1200|    60|Premium|
++-----------+------+----+---------+------------+------+-------+
 
+
+Original Schema:
+root
+ |-- customer_id: string (nullable = true)
+ |-- name: string (nullable = true)
+ |-- age: integer (nullable = true)
+ |-- city: string (nullable = true)
+ |-- monthly_bill: integer (nullable = true)
+ |-- tenure: integer (nullable = true)
+ |-- plan: string (nullable = true)
++-----------+------+---+---------+------------+------+-------+
+|customer_id|  name|age|     city|monthly_bill|tenure|   plan|
++-----------+------+---+---------+------------+------+-------+
+|       C001| Rahul| 28|Bengaluru|         599|    12|Premium|
+|       C002| Priya| 35|   Mumbai|         799|    24|Premium|
+|       C003|  Amit| 42|    Delhi|         450|    36|  Basic|
+|       C004|  Neha|  0|Bengaluru|         699|    18|Premium|
+|       C005|  Arun| 31|  Chennai|           0|    10|  Basic|
+|       C006| Kiran| 27|   Mumbai|         999|    30|Premium|
+|       C007| Divya| 45|    Delhi|         550|    48|  Basic|
+|       C008|  Ravi| 29|Bengaluru|         650|    15|Premium|
+|       C009| Anita| 38|  Chennai|         500|     0|  Basic|
+|       C010|Suresh| 52|   Mumbai|        1200|    60|Premium|
++-----------+------+---+---------+------------+------+-------+
+Schema After Type Conversion:
+root
+ |-- customer_id: string (nullable = true)
+ |-- name: string (nullable = true)
+ |-- age: integer (nullable = false)
+ |-- city: string (nullable = true)
+ |-- monthly_bill: double (nullable = true)
+ |-- tenure: integer (nullable = false)
+ |-- plan: string (nullable = true)
+
+Total Customers:
+10
++--------------------+
+|average_monthly_bill|
++--------------------+
+|               644.6|
++--------------------+
+
+|     city|customer_count|
++---------+--------------+
+|   Mumbai|             3|
+|Bengaluru|             3|
+|  Chennai|             2|
+|    Delhi|             2|
++---------+--------------+
++-----------+------+---+------+------------+------+-------+
+|customer_id|  name|age|  city|monthly_bill|tenure|   plan|
++-----------+------+---+------+------------+------+-------+
+|       C002| Priya| 35|Mumbai|       799.0|    24|Premium|
+|       C006| Kiran| 27|Mumbai|       999.0|    30|Premium|
+|       C010|Suresh| 52|Mumbai|      1200.0|    60|Premium|
++-----------+------+---+------+------------+------+-------+
++-------+-----------------+
+|   plan|     average_bill|
++-------+-----------------+
+|Premium|824.3333333333334|
+|  Basic|            375.0|
++-------+-----------------+
+Original RDD: [100, 200, 300, 400, 500]
+After map: [200, 400, 600, 800, 1000]
+After filter: [300, 400, 500]
+Count: 3
+Customer Count:
+10
