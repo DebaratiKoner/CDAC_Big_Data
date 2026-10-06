@@ -94,3 +94,115 @@ Oct 06 11:09:41 Ubuntu2 systemd[1]: Finished postgresql.service - PostgreSQL RDB
 ERROR:  role "railuser" already exists
 (sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/rail-lab$ sudo -u postgres psql -c "CREATE DATABASE raillab OWNER railuser;"
 ERROR:  database "raillab" already exists
+vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/rail-lab$ source ~/CDAC_Big_Data/kafka/sparkenv/bin/activate
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/rail-lab$ pyspark --packages org.postgresql:postgresql:42.7.3
+Python 3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+26/10/06 11:24:48 WARN Utils: Your hostname, Ubuntu2 resolves to a loopback address: 127.0.1.1; using 10.0.2.15 instead (on interface enp0s3)
+26/10/06 11:24:48 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+:: loading settings :: url = jar:file:/home/vboxuser/CDAC_Big_Data/kafka/sparkenv/lib/python3.14/site-packages/pyspark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /home/vboxuser/.ivy2/cache
+The jars for the packages stored in: /home/vboxuser/.ivy2/jars
+org.postgresql#postgresql added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-3eaaccf8-8b7e-45ac-83d2-0726dd5a9e25;1.0
+	confs: [default]
+	found org.postgresql#postgresql;42.7.3 in central
+	found org.checkerframework#checker-qual;3.42.0 in central
+:: resolution report :: resolve 155ms :: artifacts dl 13ms
+	:: modules in use:
+	org.checkerframework#checker-qual;3.42.0 from central in [default]
+	org.postgresql#postgresql;42.7.3 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   2   |   0   |   0   |   0   ||   2   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-3eaaccf8-8b7e-45ac-83d2-0726dd5a9e25
+	confs: [default]
+	0 artifacts copied, 2 already retrieved (0kB/6ms)
+26/10/06 11:24:49 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/10/06 11:24:50 WARN HiveConf: HiveConf of name hive.metastore.event.db.notification.api.auth does not exist
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /__ / .__/\_,_/_/ /_/\_\   version 3.5.1
+      /_/
+
+Using Python version 3.14.4 (main, Aug 20 2026 10:41:58)
+Spark context Web UI available at http://10.0.2.15:4040
+Spark context available as 'sc' (master = local[*], app id = local-1791285891388).
+SparkSession available as 'spark'.
+>>> from pyspark.sql import functions as F
+... 
+... trains = spark.read.csv(
+...     "file:///home/vboxuser/CDAC_Big_Data/kafka/rail-lab/data/trains.csv",
+...     header=True,
+...     inferSchema=True
+... )
+... 
+... trips = spark.read.csv(
+...     "file:///home/vboxuser/CDAC_Big_Data/kafka/rail-lab/data/trips.csv",
+...     header=True,
+...     inferSchema=True
+... )
+... 
+... trips = trips.withColumn(
+...     "delayed",
+...     (F.col("delay_minutes") > 15).cast("int")
+... )
+... trains.printSchema()
+... trips.printSchema()
+... trains.show(5)
+... trips.show(5)
+... 
+... print("Trains:", trains.count())
+... print("Trips:", trips.count())
+... 
+root
+ |-- train_id: integer (nullable = true)
+ |-- train_type: string (nullable = true)
+ |-- zone: string (nullable = true)
+ |-- distance_km: integer (nullable = true)
+ |-- coaches: integer (nullable = true)
+ |-- age_years: integer (nullable = true)
+ |-- prior_breakdowns: integer (nullable = true)
+
+root
+ |-- trip_id: integer (nullable = true)
+ |-- train_id: integer (nullable = true)
+ |-- trip_date: date (nullable = true)
+ |-- weather: string (nullable = true)
+ |-- maintenance_block: integer (nullable = true)
+ |-- passengers: integer (nullable = true)
+ |-- delay_minutes: integer (nullable = true)
+ |-- delayed: integer (nullable = true)
+
++--------+----------+--------+-----------+-------+---------+----------------+
+|train_id|train_type|    zone|distance_km|coaches|age_years|prior_breakdowns|
++--------+----------+--------+-----------+-------+---------+----------------+
+|       1|   Express|Southern|        345|     16|       18|               0|
+|       2| Passenger| Eastern|       1600|     22|        2|               3|
+|       3|  Rajdhani| Central|       1805|     19|       18|               1|
+|       4|   Express| Eastern|        637|      8|       15|               2|
+|       5|   Express| Central|       1990|     16|       27|               2|
++--------+----------+--------+-----------+-------+---------+----------------+
+only showing top 5 rows
+
++-------+--------+----------+-------+-----------------+----------+-------------+-------+
+|trip_id|train_id| trip_date|weather|maintenance_block|passengers|delay_minutes|delayed|
++-------+--------+----------+-------+-----------------+----------+-------------+-------+
+|      1|      62|2026-04-13|  Clear|                0|       386|            1|      0|
+|      2|      77|2026-08-31|    Fog|                0|      1749|            1|      0|
+|      3|     153|2026-01-07|  Clear|                0|       430|           15|      0|
+|      4|     199|2026-06-21|   Rain|                0|      1666|           30|      1|
+|      5|      52|2026-09-13|  Clear|                0|      1096|            1|      0|
++-------+--------+----------+-------+-----------------+----------+-------------+-------+
+only showing top 5 rows
+
+Trains: 200
+Trips: 30000
+>>> 
