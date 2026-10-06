@@ -1,0 +1,96 @@
+vboxuser@Ubuntu2:~$ java -version
+openjdk version "1.8.0_504"
+OpenJDK Runtime Environment (build 1.8.0_504-8u504-ga-1ubuntu1~26.04.3-b01)
+OpenJDK 64-Bit Server VM (build 25.504-b01, mixed mode)
+vboxuser@Ubuntu2:~$ sudo update-alternatives --config java
+[sudo: authenticate] Password:           
+There are 3 choices for the alternative java (providing /usr/bin/java).
+
+  Selection    Path                                            Priority   Status
+------------------------------------------------------------
+  0            /usr/lib/jvm/java-17-openjdk-amd64/bin/java      1711      auto mode
+  1            /usr/lib/jvm/java-11-openjdk-amd64/bin/java      1111      manual mode
+* 2            /usr/lib/jvm/java-17-openjdk-amd64/bin/java      1711      manual mode
+  3            /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java   1081      manual mode
+
+Press <enter> to keep the current choice[*], or type selection number: 2
+vboxuser@Ubuntu2:~$ sudo update-alternatives --config javac
+There are 3 choices for the alternative javac (providing /usr/bin/javac).
+
+  Selection    Path                                          Priority   Status
+------------------------------------------------------------
+  0            /usr/lib/jvm/java-17-openjdk-amd64/bin/javac   1711      auto mode
+  1            /usr/lib/jvm/java-11-openjdk-amd64/bin/javac   1111      manual mode
+* 2            /usr/lib/jvm/java-17-openjdk-amd64/bin/javac   1711      manual mode
+  3            /usr/lib/jvm/java-8-openjdk-amd64/bin/javac    1081      manual mode
+
+Press <enter> to keep the current choice[*], or type selection number: 2
+vboxuser@Ubuntu2:~$ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
+vboxuser@Ubuntu2:~$ java -version
+openjdk version "17.0.20.1" 2026-08-18
+OpenJDK Runtime Environment (build 17.0.20.1+1-1-26.04-Ubuntu)
+OpenJDK 64-Bit Server VM (build 17.0.20.1+1-1-26.04-Ubuntu, mixed mode, sharing)
+vboxuser@Ubuntu2:~$ python3 --version
+Python 3.14.4
+vboxuser@Ubuntu2:~$ cd CDAC_Big_Data
+vboxuser@Ubuntu2:~/CDAC_Big_Data$ cd kafka
+vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka$ ls
+kafka_2.13-3.7.0  kafka_2.13-3.7.0.tgz  rail-lab  spark-kafka-demo  sparkenv
+vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka$ source ~/CDAC_Big_Data/kafka/sparkenv/bin/activate
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka$ which python
+pyspark --version
+/home/vboxuser/CDAC_Big_Data/kafka/sparkenv/bin/python
+26/10/06 11:19:43 WARN Utils: Your hostname, Ubuntu2 resolves to a loopback address: 127.0.1.1; using 10.0.2.15 instead (on interface enp0s3)
+26/10/06 11:19:43 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 3.5.1
+      /_/
+                        
+Using Scala version 2.12.18, OpenJDK 64-Bit Server VM, 17.0.20.1
+Branch HEAD
+Compiled by user heartsavior on 2024-02-15T11:24:58Z
+Revision fd86f85e181fc2dc0f50a096855acf83a6cc5d9c
+Url https://github.com/apache/spark
+Type --help for more information.
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka$ cd rail-lab
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/rail-lab$ python -c "import pandas,numpy; print('OK')"
+OK
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/rail-lab$ python gen_data.py
+Done: 200 trains, 30000 trips
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/rail-lab$ ls -lh data/
+total 1.0M
+-rw-rw-r-- 1 vboxuser vboxuser  6.6K Oct  6 11:20 trains.csv
+-rw-rw-r-- 1 vboxuser vboxuser 1014K Oct  6 11:20 trips.csv
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/rail-lab$ head -3 data/trains.csv
+train_id,train_type,zone,distance_km,coaches,age_years,prior_breakdowns
+1,Express,Southern,345,16,18,0
+2,Passenger,Eastern,1600,22,2,3
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/rail-lab$ head -3 data/trips.csv
+trip_id,train_id,trip_date,weather,maintenance_block,passengers,delay_minutes
+1,62,2026-04-13,Clear,0,386,1
+2,77,2026-08-31,Fog,0,1749,1
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/rail-lab$ wc -l data/trains.csv
+wc -l data/trips.csv
+201 data/trains.csv
+30001 data/trips.csv
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/rail-lab$ sudo service postgresql start
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/rail-lab$ sudo service postgresql status
+● postgresql.service - PostgreSQL RDBMS
+     Loaded: loaded (/usr/lib/systemd/system/postgresql.service; enabled; preset: enabled)
+     Active: active (exited) since Tue 2026-10-06 11:09:41 UTC; 11min ago
+ Invocation: 15414aaf296c4239b6626af57d2ab9a5
+    Process: 1925 ExecStart=/bin/true (code=exited, status=0/SUCCESS)
+   Main PID: 1925 (code=exited, status=0/SUCCESS)
+   Mem peak: 1.7M
+        CPU: 7ms
+
+Oct 06 11:09:41 Ubuntu2 systemd[1]: Starting postgresql.service - PostgreSQL RDBMS...
+Oct 06 11:09:41 Ubuntu2 systemd[1]: Finished postgresql.service - PostgreSQL RDBMS.
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/rail-lab$ sudo -u postgres psql -c "CREATE USER railuser WITH PASSWORD 'Rail@12345';"
+ERROR:  role "railuser" already exists
+(sparkenv) vboxuser@Ubuntu2:~/CDAC_Big_Data/kafka/rail-lab$ sudo -u postgres psql -c "CREATE DATABASE raillab OWNER railuser;"
+ERROR:  database "raillab" already exists
