@@ -1,0 +1,11 @@
+customer_id,name,age,city,monthly_bill,tenure,plan
+C001,Rahul,28,Bengaluru,599,12,Premium
+C002,Priya,35,Mumbai,799,24,Premium
+C003,Amit,42,Delhi,450,36,Basic
+C004,Neha,,Bengaluru,699,18,Premium
+C005,Arun,31,Chennai,,10,Basic
+C006,Kiran,27,Mumbai,999,30,Premium
+C007,Divya,45,Delhi,550,48,Basic
+C008,Ravi,29,Bengaluru,650,15,Premium
+C009,Anita,38,Chennai,500,,Basic
+C010,Suresh,52,Mumbai,1200,60,Premium
