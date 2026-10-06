@@ -205,4 +205,275 @@ only showing top 5 rows
 
 Trains: 200
 Trips: 30000
->>> 
+>>> trains.createOrReplaceTempView("trains")
+... 
+>>> trips.createOrReplaceTempView("trips")
+... 
+>>> spark.sql("""
+... SELECT
+...     zone,
+...     COUNT(*) AS trains,
+...     ROUND(AVG(age_years),1) AS avg_age,
+...     ROUND(AVG(distance_km),0) AS avg_distance_km
+... FROM trains
+... GROUP BY zone
+... ORDER BY trains DESC
+... """).show()
++--------+------+-------+---------------+
+|    zone|trains|avg_age|avg_distance_km|
++--------+------+-------+---------------+
+|Southern|    51|   15.9|         1119.0|
+| Eastern|    46|   16.1|         1080.0|
+|Northern|    44|   15.3|         1118.0|
+| Central|    30|   12.0|         1176.0|
+| Western|    29|   19.2|         1363.0|
++--------+------+-------+---------------+
+
+>>> spark.sql("""
+... SELECT
+...     weather,
+...     COUNT(*) AS trips,
+...     ROUND(AVG(delay_minutes),1) AS avg_delay_min,
+...     ROUND(AVG(delayed)*100,1) AS delayed_pct
+... FROM trips
+... GROUP BY weather
+... ORDER BY delayed_pct DESC
+... """).show()
+... 
++-------+-----+-------------+-----------+
+|weather|trips|avg_delay_min|delayed_pct|
++-------+-----+-------------+-----------+
+|    Fog| 4428|         23.0|       40.7|
+|   Rain| 7663|         18.9|       30.5|
+|  Clear|17909|         16.3|       22.4|
++-------+-----+-------------+-----------+
+
+>>> spark.sql("""
+... SELECT
+...     tr.train_type,
+...     COUNT(*) AS trips,
+...     ROUND(AVG(t.delay_minutes),1) AS avg_delay_min,
+...     ROUND(AVG(t.delayed)*100,1) AS delayed_pct
+... FROM trips t
+... JOIN trains tr
+... ON t.train_id = tr.train_id
+... GROUP BY tr.train_type
+... ORDER BY delayed_pct DESC
+... """).show()
+... 
++----------+-----+-------------+-----------+
+|train_type|trips|avg_delay_min|delayed_pct|
++----------+-----+-------------+-----------+
+| Passenger| 8204|         18.7|       29.4|
+|   Express| 8073|         18.2|       27.4|
+| Superfast| 6845|         17.4|       26.2|
+|  Rajdhani| 6878|         17.2|       25.2|
++----------+-----+-------------+-----------+
+
+>>> spark.sql("""
+... SELECT zone, COUNT(*)
+... FROM trains
+... GROUP BY zone
+... """).explain(True)
+== Parsed Logical Plan ==
+'Aggregate ['zone], ['zone, unresolvedalias('COUNT(1), None)]
++- 'UnresolvedRelation [trains], [], false
+
+== Analyzed Logical Plan ==
+zone: string, count(1): bigint
+Aggregate [zone#19], [zone#19, count(1) AS count(1)#323L]
++- SubqueryAlias trains
+   +- View (`trains`, [train_id#17,train_type#18,zone#19,distance_km#20,coaches#21,age_years#22,prior_breakdowns#23])
+      +- Relation [train_id#17,train_type#18,zone#19,distance_km#20,coaches#21,age_years#22,prior_breakdowns#23] csv
+
+== Optimized Logical Plan ==
+Aggregate [zone#19], [zone#19, count(1) AS count(1)#323L]
++- Project [zone#19]
+   +- Relation [train_id#17,train_type#18,zone#19,distance_km#20,coaches#21,age_years#22,prior_breakdowns#23] csv
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- HashAggregate(keys=[zone#19], functions=[count(1)], output=[zone#19, count(1)#323L])
+   +- Exchange hashpartitioning(zone#19, 200), ENSURE_REQUIREMENTS, [plan_id=404]
+      +- HashAggregate(keys=[zone#19], functions=[partial_count(1)], output=[zone#19, count#327L])
+         +- FileScan csv [zone#19] Batched: false, DataFilters: [], Format: CSV, Location: InMemoryFileIndex(1 paths)[file:/home/vboxuser/CDAC_Big_Data/kafka/rail-lab/data/trains.csv], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<zone:string>
+
+>>> spark.sql("""
+... WITH train_delay AS (
+...     SELECT
+...         tr.train_id,
+...         tr.train_type,
+...         tr.zone,
+...         ROUND(SUM(t.delay_minutes)/60,0) AS total_delay_hrs
+...     FROM trips t
+...     JOIN trains tr
+...     ON t.train_id = tr.train_id
+...     GROUP BY
+...         tr.train_id,
+...         tr.train_type,
+...         tr.zone
+... )
+... SELECT *
+... FROM (
+...     SELECT
+...         *,
+...         ROW_NUMBER() OVER (
+...             PARTITION BY zone
+...             ORDER BY total_delay_hrs DESC
+...         ) AS row_num,
+... 
+...         RANK() OVER (
+...             PARTITION BY zone
+...             ORDER BY total_delay_hrs DESC
+...         ) AS rnk,
+... 
+...         DENSE_RANK() OVER (
+...             PARTITION BY zone
+...             ORDER BY total_delay_hrs DESC
+...              ) AS dense_rnk
+... 
+...     FROM train_delay
+... )
+... WHERE rnk <= 3
+... ORDER BY zone, rnk
+... """).show(15)
+... 
+... 
++--------+----------+--------+---------------+-------+---+---------+
+|train_id|train_type|    zone|total_delay_hrs|row_num|rnk|dense_rnk|
++--------+----------+--------+---------------+-------+---+---------+
+|     180|   Express| Central|           71.0|      1|  1|        1|
+|     162|  Rajdhani| Central|           66.0|      2|  2|        2|
+|     178|   Express| Central|           57.0|      3|  3|        3|
+|     186|  Rajdhani| Central|           57.0|      4|  3|        3|
+|     143| Passenger| Eastern|           80.0|      1|  1|        1|
+|      20|   Express| Eastern|           66.0|      2|  2|        2|
+|     146|   Express| Eastern|           61.0|      3|  3|        3|
+|      87| Superfast|Northern|           69.0|      1|  1|        1|
+|      84| Passenger|Northern|           67.0|      2|  2|        2|
+|      58|  Rajdhani|Northern|           65.0|      3|  3|        3|
+|      29| Passenger|Southern|           73.0|      1|  1|        1|
+|      54| Passenger|Southern|           73.0|      2|  1|        1|
+|      57| Passenger|Southern|           69.0|      3|  3|        2|
+|     112|   Express| Western|           72.0|      1|  1|        1|
+|     107| Superfast| Western|           67.0|      2|  2|        2|
++--------+----------+--------+---------------+-------+---+---------+
+only showing top 15 rows
+
+>>> spark.sql("""
+... WITH monthly AS (
+...     SELECT
+...         date_format(trip_date,'yyyy-MM') AS month,
+...         ROUND(SUM(delay_minutes)/60,0) AS delay_hours
+...     FROM trips
+...     GROUP BY 1
+... )
+... 
+... SELECT
+...     month,
+...     delay_hours,
+...      SUM(delay_hours) OVER (
+...         ORDER BY month
+...     ) AS running_total_hrs,
+... 
+...     delay_hours -
+...     LAG(delay_hours,1) OVER (
+...         ORDER BY month
+...     ) AS change_vs_prev_month,
+... 
+...     ROUND(
+...         AVG(delay_hours) OVER (
+...             ORDER BY month
+...             ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+...         ),
+...   0
+...     ) AS moving_avg_3m
+... 
+... FROM monthly
+... ORDER BY month
+... """).show()
+... 
+26/10/06 11:33:29 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/10/06 11:33:29 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/10/06 11:33:29 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/10/06 11:33:30 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/10/06 11:33:30 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/10/06 11:33:30 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/10/06 11:33:30 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
++-------+-----------+-----------------+--------------------+-------------+
+|  month|delay_hours|running_total_hrs|change_vs_prev_month|moving_avg_3m|
++-------+-----------+-----------------+--------------------+-------------+
+|2026-01|     1062.0|           1062.0|                NULL|       1062.0|
+|2026-02|      890.0|           1952.0|              -172.0|        976.0|
+|2026-03|     1033.0|           2985.0|               143.0|        995.0|
+|2026-04|     1034.0|           4019.0|                 1.0|        986.0|
+|2026-05|     1026.0|           5045.0|                -8.0|       1031.0|
+|2026-06|      997.0|           6042.0|               -29.0|       1019.0|
+|2026-07|      964.0|           7006.0|               -33.0|        996.0|
+|2026-08|     1055.0|           8061.0|                91.0|       1005.0|
+|2026-09|      912.0|           8973.0|              -143.0|        977.0|
++-------+-----------+-----------------+--------------------+-------------+
+
+>>> spark.sql("""
+... SELECT
+...     maintenance_block,
+...     COUNT(*) AS trips,
+...     ROUND(AVG(delayed)*100,1) AS delayed_pct,
+...     ROUND(AVG(delay_minutes),1) AS avg_delay_min
+... FROM trips
+... GROUP BY maintenance_block
+... ORDER BY maintenance_block
+... """).show()
++-----------------+-----+-----------+-------------+
+|maintenance_block|trips|delayed_pct|avg_delay_min|
++-----------------+-----+-----------+-------------+
+|                0|25503|       24.7|         17.0|
+|                1| 4497|       41.0|         23.1|
++-----------------+-----+-----------+-------------+
+
+>>> spark.sql("""
+... SELECT
+...     CASE
+...         WHEN tr.age_years < 10 THEN 'Under 10 yrs'
+...         WHEN tr.age_years < 20 THEN '10-20 yrs'
+...         ELSE '20+ yrs'
+...     END AS stock_age,
+... 
+...     ROUND(AVG(t.delayed)*100,1) AS delayed_pct
+...     FROM trips t
+... JOIN trains tr
+... ON t.train_id = tr.train_id
+... 
+... GROUP BY 1
+... ORDER BY delayed_pct DESC
+... """).show()
++------------+-----------+
+|   stock_age|delayed_pct|
++------------+-----------+
+|     20+ yrs|       34.0|
+|   10-20 yrs|       25.7|
+|Under 10 yrs|       19.4|
++------------+-----------+
+
+>>> spark.sql("""
+... SELECT
+...     tr.zone,
+...     ROUND(AVG(t.delayed)*100,1) AS delayed_pct
+... 
+... FROM trips t
+... JOIN trains tr
+... ON t.train_id = tr.train_id
+... 
+... GROUP BY tr.zone
+... ORDER BY delayed_pct DESC
+... """).show()
++--------+-----------+
+|    zone|delayed_pct|
++--------+-----------+
+| Western|       30.5|
+|Southern|       26.9|
+|Northern|       26.7|
+| Eastern|       26.3|
+| Central|       26.2|
++--------+-----------+
+
